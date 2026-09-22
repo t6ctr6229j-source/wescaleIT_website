@@ -1,0 +1,32 @@
+[
+  {
+    "name": "FCTH",
+    "full": "from CISO to Hero",
+    "topic": "Informationssicherheit",
+    "title": "Sicherheit braucht Menschen.",
+    "text": "Unsere Marke für Informationssicherheit. Für Menschen, die Verantwortung übernehmen und Sicherheit im Unternehmen voranbringen.",
+    "image": "assets/brands/fcth-logo.png",
+    "url": "https://www.ciso2hero.com/",
+    "label": "Zu FCTH"
+  },
+  {
+    "name": "Silverback",
+    "full": "Silverback Network",
+    "topic": "Staffing & Managementberatung",
+    "title": "Gute Leute. Gute Entscheidungen.",
+    "text": "Erfahrung, die weiterhilft. Silverback verbindet Unternehmen mit passenden Experten und begleitet anspruchsvolle Managementaufgaben.",
+    "image": "assets/brands/silverback-light.png",
+    "url": "mailto:silverback@wescaleit.com",
+    "label": "Kontakt zu Silverback"
+  },
+  {
+    "name": "Psoydo",
+    "full": "Psoydo",
+    "topic": "Pseudonymisierung",
+    "title": "Daten nutzen. Vertrauliches schützen.",
+    "text": "Unsere eigenständige Lösung für Pseudonymisierung. Damit sensible Informationen geschützt bleiben, wenn mit Daten gearbeitet wird.",
+    "image": "assets/brands/psoydo-negative.webp",
+    "url": "https://t6ctr6229j-source.github.io/psoydo_website/de/",
+    "label": "Zu Psoydo"
+  }
+]

@@ -3,18 +3,22 @@ from urllib.request import urlopen
 from urllib.error import HTTPError
 import os
 import json
+import time
+
+def fresh(path):
+    return urlopen(origin + path + "?release_check=" + str(time.time_ns()), timeout=25)
 
 origin = 'https://wescaleit.com'
 try:
-    with urlopen(origin + '/release.json', timeout=25) as r:
+    with fresh('/release.json') as r:
         live = json.load(r)
     if live['commit'] != os.environ['GITHUB_SHA']:
         raise ValueError('Public domain is not serving this release.')
     for path, marker in [('/', 'No bullshit!'), ('/impressum', 'HRB 755825'), ('/datenschutz', 'G-7QYEF752NM'), ('/robots.txt', 'Allow: /'), ('/sitemap.xml', 'https://wescaleit.com/karriere')]:
-        with urlopen(origin + path, timeout=25) as r:
+        with fresh(path) as r:
             assert marker in r.read().decode(), path
     try:
-        urlopen(origin + '/__release-check__/missing-page', timeout=25)
+        fresh('/__release-check__/missing-page')
     except HTTPError as e:
         assert e.code == 404
     else:

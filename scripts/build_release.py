@@ -4,6 +4,8 @@ Usage: python3 scripts/build_release.py [--production]
 Only --production opens indexing, after checking known launch dependencies.
 """
 import argparse
+import json
+import os
 from html import escape
 from pathlib import Path
 import re
@@ -41,6 +43,7 @@ def build(production=False):
     for directory in ('css', 'js', 'images', 'fonts', 'assets'):
         if (ROOT / directory).exists():
             shutil.copytree(ROOT / directory, OUT / directory)
+    (OUT / 'release.json').write_text(json.dumps({'commit': os.environ.get('GITHUB_SHA', subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip())}))
     sitemap = ET.Element('urlset', xmlns='http://www.sitemaps.org/schemas/sitemap/0.9')
     for name, content in pages.items():
         route = '/' if name == 'index.html' else '/' + name.removesuffix('.html')
@@ -67,6 +70,15 @@ def build(production=False):
 DirectoryIndex index.html
 ErrorDocument 404 /404.html
 RewriteEngine On
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} !^wescaleit\\.com$ [NC]
+RewriteRule ^ https://wescaleit.com%{REQUEST_URI} [R=301,L]
+RewriteRule ^infosec/?$ https://www.ciso2hero.com/beratung.html [R=301,L]
+RewriteRule ^isms/?$ https://www.ciso2hero.com/beratung.html [R=301,L]
+RewriteRule ^itxm/?$ https://www.silverback-network.com/ [R=301,L]
+<FilesMatch "^\\.">
+Require all denied
+</FilesMatch>
 # Keep former extensionless company URLs and one canonical URL per page.
 RewriteCond %{THE_REQUEST} \\s/+index\\.html[\\s?] [NC]
 RewriteRule ^index\\.html$ / [R=301,L]

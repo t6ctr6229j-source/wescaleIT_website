@@ -42,3 +42,7 @@ Alle sechs Seiten neu strukturiert, mit einem gemeinsamen CSS-System statt einer
 - JavaScript-Syntax und Git-Whitespace-Prüfung bestanden.
 
 Kein visueller Browsertest durchgeführt: Der zuvor abgelehnte lokale Browserzugriff wurde nicht durch einen anderen Renderingweg umgangen. Responsive CSS ist implementiert; die tatsächliche Darstellung und Spline-Laufzeit müssen im Browser noch geprüft werden. Silverback bleibt eine ausdrücklich bezeichnete zugriffsbeschränkte Vorschau.
+
+## Originalen Startseiten-Einstieg wiederhergestellt
+
+Claim, originale SVG-Unterstreichung, violett-blauer Verlauf, großzügige Hero-Höhe und Spline-Positionierung aus dem Webflow-Export übernommen. Begleittext beschreibt die Dachgesellschaft. Markenflächen folgen unmittelbar als eigene Sektion, ohne Accordion. Keine Änderungen an Unterseiten. Lokale Link-/Assetprüfung und Git-Whitespace-Prüfung bestanden; visuelle Browserprüfung weiterhin offen.

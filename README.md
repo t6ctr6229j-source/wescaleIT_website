@@ -4,7 +4,7 @@ Website-Entwurf der wescaleIT AG als Dach für FCTH, Silverback und Psoydo. Alle
 
 ## Konzept
 
-- **Startseite:** Drei direkt sichtbare Marken führen Kunden weiter. Ein kurzer Bereich erklärt die gemeinsame Haltung und verweist auf Team und Karriere.
+- **Startseite:** Der ursprüngliche große Einstieg mit „No bullshit! Just quality.“, Unterstreichung und Spline-Szene eröffnet die Seite. Unmittelbar darunter führen drei ohne Aufklappen sichtbare Marken Kunden weiter. Ein kurzer Bereich erklärt die gemeinsame Haltung und verweist auf Team und Karriere.
 - **Haltung & Team:** Rolle der Dachgesellschaft, vier konkrete Kulturprinzipien und das bestehende Team. Porträts stehen ausschließlich im Teamraster.
 - **Karriere:** Stellen, Arbeitskultur, Teameinblicke, bestehende FAQ und ein kompakter Bewerbungsbereich ohne Porträt.
 - **Stellendetail:** Bestehende Aufgaben und Anforderungen, Eckdaten und Bewerbung per E-Mail.

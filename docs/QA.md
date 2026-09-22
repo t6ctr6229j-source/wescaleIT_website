@@ -28,3 +28,17 @@ Vor Veröffentlichung: Darstellung bei 1440, 768 und 390 px, mobile Navigation, 
 - Kontaktseite beginnt mit Markenauswahl; zentraler Kontakt ausdrücklich für die Unternehmensorganisation.
 - Lokale Links, Fragmente, Bilder und JavaScript-Syntax erneut geprüft. Die visuelle Browserprüfung ist weiterhin offen.
 - Silverback-Zugriff über Sites-Metadaten geprüft: derzeit `custom`, keine öffentliche Website verfügbar. Vorschau im Prototyp klar gekennzeichnet; öffentliche URL bleibt Launch-Voraussetzung.
+
+## Durchgängige Dachgesellschaft – zweite Überarbeitung
+
+Alle sechs Seiten neu strukturiert, mit einem gemeinsamen CSS-System statt einer Mischung aus alten Webflow-Layouts und neuen Komponenten. Die bestehende Farbwelt und lokalen Schriften bleiben. Spline im Einstieg, animierte Markenflächen und Buttons bleiben als Bewegungselemente; alte Scroll-Bildstrecken entfallen.
+
+- Startseite: direkt sichtbare Marken, kurze Erklärung der gemeinsamen Haltung.
+- Kultur: Rolle der Dachgesellschaft und konkrete Zusammenarbeit; vorhandene Teamdaten erhalten.
+- Karriere: bestehende Jobanforderungen und neun FAQ erhalten, Benefits redaktionell gestrafft.
+- Porträts ausschließlich im Teamraster. Kontakt, Bewerbung und sämtliche Footer ohne Personenbilder.
+- Gemeinsame Navigation, Abschnittsabstände, Schriftgrößen, Bildformate und Footer.
+- Alle sechs Seiten: lokale Links, Fragmente, Assets, Alt-Texte, IDs und genau eine H1 geprüft.
+- JavaScript-Syntax und Git-Whitespace-Prüfung bestanden.
+
+Kein visueller Browsertest durchgeführt: Der zuvor abgelehnte lokale Browserzugriff wurde nicht durch einen anderen Renderingweg umgangen. Responsive CSS ist implementiert; die tatsächliche Darstellung und Spline-Laufzeit müssen im Browser noch geprüft werden. Silverback bleibt eine ausdrücklich bezeichnete zugriffsbeschränkte Vorschau.

@@ -10,8 +10,8 @@ Die mitgelieferte `.htaccess` setzt Apache mit mod_rewrite und erlaubten Overrid
 
 ## Noch konkret zu klären
 
-- Hosting und Zielverzeichnis für **diese** Domain bestätigen. Keine Deployment-Einstellungen einer anderen Marke übernehmen oder deren Verzeichnisse überschreiben.
-- Silverback: finale öffentliche Website auf Erreichbarkeit und richtigen Inhalt prüfen, dann alle Links inklusive JSON-LD und `docs/brand-links.json` umstellen. `https://silverback-network.com` lieferte bei der Prüfung HTTP 502. Psoydo wurde unter `https://psoydo.com/de/` mit HTTP 200 und passendem Seiteninhalt geprüft und bereits umgestellt.
+- Hosting für `wescaleit.com`: United Domains, vom Nutzer bestätigt. Das konkrete Zielverzeichnis ist noch festzulegen. Keine Verzeichnisse anderer Marken überschreiben.
+- Silverback: `https://www.silverback-network.com` ist die bestätigte finale Adresse; Links und JSON-LD sind umgestellt. Erreichbarkeit vor Umschaltung erneut prüfen. Psoydo ist auf `https://psoydo.com/de/` umgestellt.
 - Impressum und Datenschutz als lokale Seiten integrieren. Die derzeitigen Links zeigen auf die alte Website. Datenschutz auf den tatsächlichen neuen Hoster, Spline und das einwilligungsabhängige Google Analytics abstimmen; vorhandene Webflow-Hostingangaben nicht ungeprüft übernehmen.
 - Alte Leistungs-URLs aus `docs/content-map.md` jeweils einem passenden endgültigen Markenziel zuordnen. Keine pauschale Umleitung aller alten Seiten auf die Startseite.
 - Aktuellen Stellenstatus und Teamrollen prüfen; GA4-Aufbewahrung und erweiterte Messung im Konto abgleichen.

@@ -39,7 +39,7 @@ Relative interne Links unterstützen GitHub Pages in einem Unterverzeichnis. Pag
 
 - FCTH: https://www.ciso2hero.com/
 - Psoydo: https://psoydo.com/de/
-- Silverback: zugriffsbeschränkte Vorschau unter https://silverback-network.wescaleit-ag-0446.chatgpt.site – öffentliche Zieladresse vor Launch einsetzen.
+- Silverback: https://www.silverback-network.com (vom Nutzer bestätigte Zieladresse).
 
 Entwurfsstatus: `noindex, nofollow` und `robots.txt`. Impressum und Datenschutz verweisen auf die bestehenden Texte. Kein Formularbackend oder vorgetäuschter Versand. Google Analytics lädt ausschließlich nach Statistikzustimmung. Bewerbungen öffnen das E-Mail-Programm.
 

@@ -1,6 +1,6 @@
 # wescaleIT – Eigene Stärken. Gemeinsame Haltung.
 
-Website-Entwurf der wescaleIT AG als Dach für FCTH, Silverback und Psoydo. Alle sechs Seiten verwenden ein gemeinsames Layout- und Typografiesystem. Die bestehende Produktionsdomain wurde nicht verändert.
+Website-Entwurf der wescaleIT AG als Dach für FCTH, Silverback und Psoydo. Alle neun Seiten verwenden ein gemeinsames Layout- und Typografiesystem. Die bestehende Produktionsdomain wurde nicht verändert.
 
 ## Konzept
 
@@ -44,3 +44,9 @@ Relative interne Links unterstützen GitHub Pages in einem Unterverzeichnis. Pag
 Entwurfsstatus: `noindex, nofollow` und `robots.txt`. Impressum und Datenschutz verweisen auf die bestehenden Texte. Kein Formularbackend, Tracking oder vorgetäuschter Versand. Bewerbungen öffnen das E-Mail-Programm.
 
 Vor öffentlichem Launch: Markenadressen, Teamrollen und Stellenstatus bestätigen; visuelle Prüfung im Desktop- und Mobilbrowser durchführen; alte Leistungs-URLs passend weiterleiten. Prüfumfang und Grenzen stehen in `docs/QA.md`.
+
+## Markenporträts
+
+`marke-fcth.html`, `marke-silverback.html` und `marke-psoydo.html` erklären Schwerpunkt, Zielgruppe und Beziehung zur wescaleIT AG. Eigenständige Texte, individuelle Metadaten und JSON-LD mit Organization/Brand. Keine eigenständigen Tochtergesellschaften behauptet. Die Hauptkarten verlinken weiterhin extern; separate Links darunter und im Footer erschließen die Porträts.
+
+Entwurf bleibt nicht indexierbar. Beim Go-live Indexierung, finale URLs und Canonicals/Sitemap gemeinsam auf die Produktionsdomain abstimmen. Strukturierte Daten garantieren keine Such- oder KI-Platzierung.

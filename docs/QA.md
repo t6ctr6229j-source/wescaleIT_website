@@ -46,3 +46,7 @@ Kein visueller Browsertest durchgeführt: Der zuvor abgelehnte lokale Browserzug
 ## Originalen Startseiten-Einstieg wiederhergestellt
 
 Claim, originale SVG-Unterstreichung, violett-blauer Verlauf, großzügige Hero-Höhe und Spline-Positionierung aus dem Webflow-Export übernommen. Begleittext beschreibt die Dachgesellschaft. Markenflächen folgen unmittelbar als eigene Sektion, ohne Accordion. Keine Änderungen an Unterseiten. Lokale Link-/Assetprüfung und Git-Whitespace-Prüfung bestanden; visuelle Browserprüfung weiterhin offen.
+
+## Drei Markenporträts ergänzt
+
+Neun Seiten: lokale Assets, Links, Fragmente, IDs und H1 geprüft. Neue Porträts haben individuelle Titel und Beschreibungen sowie syntaktisch gültige Organization/Brand-JSON-LD. Drei externe Hauptkarten und drei separate interne Links auf der Startseite geprüft; keine verschachtelten Anker. Hero erhalten. Gemeinsamer Footer verlinkt alle Porträts. Noindex bleibt für den Entwurf bestehen. Silverback-Vorschau weiterhin gekennzeichnet. Keine visuelle Browserprüfung durchgeführt.

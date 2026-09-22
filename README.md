@@ -41,7 +41,7 @@ Relative interne Links unterstützen GitHub Pages in einem Unterverzeichnis. Pag
 - Psoydo: https://t6ctr6229j-source.github.io/psoydo_website/de/
 - Silverback: zugriffsbeschränkte Vorschau unter https://silverback-network.wescaleit-ag-0446.chatgpt.site – öffentliche Zieladresse vor Launch einsetzen.
 
-Entwurfsstatus: `noindex, nofollow` und `robots.txt`. Impressum und Datenschutz verweisen auf die bestehenden Texte. Kein Formularbackend, Tracking oder vorgetäuschter Versand. Bewerbungen öffnen das E-Mail-Programm.
+Entwurfsstatus: `noindex, nofollow` und `robots.txt`. Impressum und Datenschutz verweisen auf die bestehenden Texte. Kein Formularbackend oder vorgetäuschter Versand. Google Analytics lädt ausschließlich nach Statistikzustimmung. Bewerbungen öffnen das E-Mail-Programm.
 
 Vor öffentlichem Launch: Markenadressen, Teamrollen und Stellenstatus bestätigen; visuelle Prüfung im Desktop- und Mobilbrowser durchführen; alte Leistungs-URLs passend weiterleiten. Prüfumfang und Grenzen stehen in `docs/QA.md`.
 
@@ -50,3 +50,7 @@ Vor öffentlichem Launch: Markenadressen, Teamrollen und Stellenstatus bestätig
 `marke-fcth.html`, `marke-silverback.html` und `marke-psoydo.html` erklären Schwerpunkt, Zielgruppe und Beziehung zur wescaleIT AG. Eigenständige Texte, individuelle Metadaten und JSON-LD mit Organization/Brand. Keine eigenständigen Tochtergesellschaften behauptet. Die Hauptkarten verlinken weiterhin extern; separate Links darunter und im Footer erschließen die Porträts.
 
 Entwurf bleibt nicht indexierbar. Beim Go-live Indexierung, finale URLs und Canonicals/Sitemap gemeinsam auf die Produktionsdomain abstimmen. Strukturierte Daten garantieren keine Such- oder KI-Platzierung.
+
+## Google Analytics
+
+Mess-ID `G-7QYEF752NM`, Einbindung in `js/analytics.js`. Zustimmung/Ablehnung im Dialog, Änderung über Cookie-Einstellungen im Footer. Ohne Zustimmung wird kein Google-Tag geladen. Entscheidung 180 Tage gespeichert; Widerruf deaktiviert Analytics und lädt die Seite neu. Prüfen mit `node scripts/check_analytics.cjs`. Datenschutzhinweise und GA4-Kontoeinstellungen vor Produktionsfreigabe abstimmen.

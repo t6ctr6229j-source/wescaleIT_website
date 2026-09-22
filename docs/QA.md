@@ -54,3 +54,13 @@ Neun Seiten: lokale Assets, Links, Fragmente, IDs und H1 geprüft. Neue Porträt
 ## Unternehmensprofil geschärft
 
 Startseite und Haltung & Team erklären die wescaleIT AG aus Ulm als gemeinsames Unternehmen. Fünf Unternehmensfragen auf der Teamseite ergänzt, mit direkten Verweisen auf Marken, Karriere und Kontakt. Einheitliche Organization/Brand-Angaben auf Startseite, Unternehmensseite und drei Markenporträts; JSON und Beziehungen geprüft. Kein Insights-Bereich und keine neuen Fachartikel. Bestehender Hero, Logos und externe Markenlinks erhalten. Visuelle Browserprüfung bleibt offen; Noindex unverändert.
+
+## Analytics und letzte Gestaltungsschritte
+
+GA4-Mess-ID G-7QYEF752NM auf allen neun Seiten eingebunden. Google-Script wird erst nach aktiver Statistikzustimmung geladen (Basic Consent). Gleichwertige Schaltflächen für Zustimmung/Ablehnung, Footer zum erneuten Öffnen, 180 Tage gespeicherte Auswahl. Widerruf setzt ga-disable, löscht erreichbare GA-Cookies und lädt die Seite neu. Werbesignale deaktiviert, URL-Abfragen/Fragmente und Referrer nicht an die manuelle Seitenaufruf-Konfiguration übergeben. Kein GA-Laden bei HTTP-Lokalvorschau.
+
+`node scripts/check_analytics.cjs`: keine Google-Script-Injektion vor Zustimmung oder nach Ablehnung; Zustimmung, wiederholte Zustimmung, gespeicherte Auswahl, abgelaufene/fehlerhafte Auswahl, blockierter Speicher und Widerruf geprüft. Kein echter Analytics-Aufruf in diesen Tests.
+
+Öffentliche Startseite erstmals im Desktopbrowser geprüft. WebGL ist in diesem Testbrowser deaktiviert, deshalb Spline nicht visuell beurteilbar. Neue Direktlinkleiste im Hero und stärkere Markenporträt-Links umgesetzt; drei Kulturbeispiele aus vorhandenen Karriereinhalten ergänzt. Die vollständige visuelle Prüfung des neuen Stands und Mobilansicht steht noch aus.
+
+Vor Produktionsstart Datenschutzhinweise auf das konkrete GA4-Setup abstimmen und GA4-Einstellungen für erweiterte Messung/Datenspeicherung prüfen. Die technische Einbindung ist keine rechtliche Freigabe. Produktionsdomain und Indexierungsfreigabe wurden nicht umgestellt.

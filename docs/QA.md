@@ -18,3 +18,13 @@
 Die lokale Browser-Vorschau wurde von der automatischen Freigabeprüfung blockiert. Es wurde kein alternativer Browserweg als Umgehung benutzt. Deshalb sind Desktop-/Mobil-Rendering, tatsächliche Scroll-/Spline-Animationen und Interaktionen nicht visuell oder im Browser abgenommen. Die vorgenannten Prüfungen sind Code-/Dateiprüfungen, keine bestandenen Browser-Tests.
 
 Vor Veröffentlichung: Darstellung bei 1440, 768 und 390 px, mobile Navigation, Accordion per Tastatur, FAQ, E-Mail-Links, Bildgalerie, Spline sowie reduced-motion prüfen. Den redaktionellen Stellenentwurf, Rollen und Markenlinks bestätigen. Die im Originalexport fehlende Space-Grotesk-Bold-Datei ergänzen.
+
+
+## Überarbeitung: Marken als direkter Einstieg
+
+- Marken-Accordion vollständig durch drei native Link-Flächen ersetzt; keine Marke ist verborgen oder von JavaScript abhängig.
+- Langen Dienstleistungs-/Kompetenz-, Zitat-, Kundenlogo- und Recruiting-Pfad auf der Startseite entfernt. Kultur und Karriere bleiben als kompakte Sekundärzugänge und eigene Seiten erhalten.
+- Einheitlicher Footer auf allen sechs Seiten mit direkten Markenlinks; bisherige generische Vertriebsansprache entfernt.
+- Kontaktseite beginnt mit Markenauswahl; zentraler Kontakt ausdrücklich für die Unternehmensorganisation.
+- Lokale Links, Fragmente, Bilder und JavaScript-Syntax erneut geprüft. Die visuelle Browserprüfung ist weiterhin offen.
+- Silverback-Zugriff über Sites-Metadaten geprüft: derzeit `custom`, keine öffentliche Website verfügbar. Vorschau im Prototyp klar gekennzeichnet; öffentliche URL bleibt Launch-Voraussetzung.

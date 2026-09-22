@@ -14,7 +14,7 @@ Anschließend `http://localhost:8080` öffnen. Alle internen Links sind relativ 
 
 ## Seiten
 
-- `index.html`: Dachmarke, Marken-Accordion, Haltung, Menschen, Kundenbanner, Karriere.
+- `index.html`: Marken-Einstieg mit drei gleichzeitig sichtbaren, direkt verlinkten Markenflächen; darunter nur ein kompakter Zugang zu Kultur und Karriere.
 - `ueber-uns.html`: gemeinsame Kultur, bestehende Bild-/Scroll-Inszenierung, vollständiges Team aus der Live-Seite.
 - `karriere.html`: bestehende Kultur- und Benefit-Inhalte, Jobübersicht, FAQ und Bewerbung.
 - `job-informationssicherheit.html`: erster redaktioneller Stellenentwurf für Informationssicherheitsberatung/Audit.
@@ -27,7 +27,7 @@ Impressum und Datenschutz verlinken auf die bestehende wescaleIT-Website. Es gib
 
 Original erhalten: Webflow-Styles und Interaktionsdatei, Neue Machina und Space Grotesk, Farbwelt, Hervorhebungen, Spline-Szene, Scroll-Bildwechsel und bestehende animierte Buttons. Ergänzungen liegen in `css/dachmarke.css` und `js/dachmarke.js`.
 
-Das Marken-Accordion verwendet dieselbe visuelle Grundstruktur wie die bisherigen Leistungsbereiche, mit einem neuen Controller für Tastaturbedienung, Fokus und mobile Darstellung. Navigation, Marken-Accordion, Logo-Animation und Karriere-FAQ funktionieren unabhängig von externen Scripts. Die originale wortweise Scroll-Animation wird mit lokal abgelegtem GSAP/SplitType weiterverwendet. Bewegungsreduktion wird für neue Animationen berücksichtigt.
+Die Startseite ist als kurzer Wegweiser aufgebaut. Alle drei Marken stehen ohne Klick oder JavaScript vollständig sichtbar im Einstieg. Jede Markenfläche ist ein direkter Link; auf kleinen Displays stehen die drei Flächen untereinander. Navigation und Karriere-FAQ funktionieren unabhängig von externen Scripts. Zurückhaltende Auftritts- und Hover-Animationen berücksichtigen reduzierte Bewegung.
 
 Die originale Spline-Szene wird weiterhin über Webflow/Spline geladen und benötigt Netzwerkzugriff. Ohne sie bleiben Hintergrund, Inhalt, Navigation und Links sichtbar. Der Export enthält Space Grotesk Bold nicht; momentan wird dafür die vorhandene Regular-Datei verwendet. Vor dem finalen Launch die lizenzierte Bold-Datei ergänzen.
 
@@ -35,7 +35,7 @@ Die originale Spline-Szene wird weiterhin über Webflow/Spline geladen und benö
 
 - FCTH: `https://www.ciso2hero.com/` aus der aktuellen Repository-Konfiguration.
 - Psoydo: bestehende GitHub-Pages-Adresse `https://t6ctr6229j-source.github.io/psoydo_website/de/`.
-- Silverback: `mailto:silverback@wescaleit.com`. Die bekannte Silverback-Vorschau ist zugriffsbeschränkt und wird deshalb nicht als öffentliche Website verlinkt. Sobald die öffentliche URL feststeht, Link und Begleittext ändern.
+- Silverback: `https://silverback-network.wescaleit-ag-0446.chatgpt.site`. Im Prototyp ausdrücklich als zugriffsbeschränkte Vorschau gekennzeichnet. Vor öffentlicher Nutzung muss diese Adresse durch die öffentliche Markenwebsite ersetzt werden. Die Zugriffsrechte der Silverback-Seite wurden nicht verändert.
 
 `docs/brand-links.json` dokumentiert die verwendeten Daten; es ist kein Laufzeit-CMS. Änderungen müssen auch in `index.html` erfolgen.
 

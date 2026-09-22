@@ -50,3 +50,7 @@ Claim, originale SVG-Unterstreichung, violett-blauer Verlauf, großzügige Hero-
 ## Drei Markenporträts ergänzt
 
 Neun Seiten: lokale Assets, Links, Fragmente, IDs und H1 geprüft. Neue Porträts haben individuelle Titel und Beschreibungen sowie syntaktisch gültige Organization/Brand-JSON-LD. Drei externe Hauptkarten und drei separate interne Links auf der Startseite geprüft; keine verschachtelten Anker. Hero erhalten. Gemeinsamer Footer verlinkt alle Porträts. Noindex bleibt für den Entwurf bestehen. Silverback-Vorschau weiterhin gekennzeichnet. Keine visuelle Browserprüfung durchgeführt.
+
+## Unternehmensprofil geschärft
+
+Startseite und Haltung & Team erklären die wescaleIT AG aus Ulm als gemeinsames Unternehmen. Fünf Unternehmensfragen auf der Teamseite ergänzt, mit direkten Verweisen auf Marken, Karriere und Kontakt. Einheitliche Organization/Brand-Angaben auf Startseite, Unternehmensseite und drei Markenporträts; JSON und Beziehungen geprüft. Kein Insights-Bereich und keine neuen Fachartikel. Bestehender Hero, Logos und externe Markenlinks erhalten. Visuelle Browserprüfung bleibt offen; Noindex unverändert.

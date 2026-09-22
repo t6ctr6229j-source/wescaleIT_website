@@ -38,7 +38,7 @@ Relative interne Links unterstützen GitHub Pages in einem Unterverzeichnis. Pag
 `docs/brand-links.json` dokumentiert die Ziele, ist aber kein Laufzeit-CMS. Bei Änderungen auch alle HTML-Verlinkungen aktualisieren.
 
 - FCTH: https://www.ciso2hero.com/
-- Psoydo: https://t6ctr6229j-source.github.io/psoydo_website/de/
+- Psoydo: https://psoydo.com/de/
 - Silverback: zugriffsbeschränkte Vorschau unter https://silverback-network.wescaleit-ag-0446.chatgpt.site – öffentliche Zieladresse vor Launch einsetzen.
 
 Entwurfsstatus: `noindex, nofollow` und `robots.txt`. Impressum und Datenschutz verweisen auf die bestehenden Texte. Kein Formularbackend oder vorgetäuschter Versand. Google Analytics lädt ausschließlich nach Statistikzustimmung. Bewerbungen öffnen das E-Mail-Programm.
@@ -51,6 +51,10 @@ Vor öffentlichem Launch: Markenadressen, Teamrollen und Stellenstatus bestätig
 
 Entwurf bleibt nicht indexierbar. Beim Go-live Indexierung, finale URLs und Canonicals/Sitemap gemeinsam auf die Produktionsdomain abstimmen. Strukturierte Daten garantieren keine Such- oder KI-Platzierung.
 
-## Google Analytics
+## Produktions-Build
+
+`python3 scripts/build_release.py` erstellt einen separaten Apache-Entwurf in `dist/wescaleit/`. Mit `--production` werden Indexierung und Sitemap aktiviert, sobald lokale Rechtstexte und finale Markenlinks vorhanden sind. Hosting-Abhängigkeiten und die konkreten noch offenen Launch-Punkte stehen in `docs/LAUNCH.md`.
+
+## Analytics-Einbindung
 
 Mess-ID `G-7QYEF752NM`, Einbindung in `js/analytics.js`. Zustimmung/Ablehnung im Dialog, Änderung über Cookie-Einstellungen im Footer. Ohne Zustimmung wird kein Google-Tag geladen. Entscheidung 180 Tage gespeichert; Widerruf deaktiviert Analytics und lädt die Seite neu. Prüfen mit `node scripts/check_analytics.cjs`. Datenschutzhinweise und GA4-Kontoeinstellungen vor Produktionsfreigabe abstimmen.

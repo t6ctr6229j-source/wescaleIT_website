@@ -84,9 +84,7 @@ RewriteCond %{THE_REQUEST} \\s/+index\\.html[\\s?] [NC]
 RewriteRule ^index\\.html$ / [R=301,L]
 RewriteCond %{THE_REQUEST} \\s/+([^?\\ ]+)\\.html[\\s?] [NC]
 RewriteRule ^(.+)\\.html$ /$1 [R=301,L]
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^(.+?)/?$ $1.html [L]
+RewriteRule ^(ueber-uns|karriere|kontakt|job-informationssicherheit|marke-fcth|marke-silverback|marke-psoydo|impressum|datenschutz|404)/?$ $1.html [END]
 ''')
     print(f'Built {len(pages)} pages in {OUT} ({"production" if production else "draft; noindex"}).')
     if issues:

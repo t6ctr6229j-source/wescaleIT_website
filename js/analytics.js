@@ -7,13 +7,16 @@
   const dialog = document.getElementById('statistics-consent');
   const status = document.getElementById('statistics-status');
   const controls = document.querySelectorAll('[data-statistics-settings]');
+  if (!dialog || !status) return;
+  let expiryTimer;
   let loaded = false;
   let accepted = false;
   window['ga-disable-' + id] = true;
   function readChoice() {
     try {
       const value = JSON.parse(localStorage.getItem(key));
-      if (value && ['granted', 'denied'].includes(value.choice) && value.expires > Date.now()) return value.choice;
+      if (value && ['granted', 'denied'].includes(value.choice) && Number.isFinite(value.expires) &&
+          value.expires > Date.now() && value.expires <= Date.now() + lifetime) return value;
     } catch (_) { /* Storage can be unavailable; default remains off. */ }
     return null;
   }
@@ -31,6 +34,19 @@
         for (const domain of domains) document.cookie = expired + '; domain=' + domain;
       }
     });
+  }
+  function watchExpiry(expires) {
+    clearTimeout(expiryTimer);
+    const remaining = expires - Date.now();
+    if (remaining <= 0) {
+      accepted = false;
+      window['ga-disable-' + id] = true;
+      clearCookies();
+      if (loaded) location.reload();
+      else show();
+      return;
+    }
+    expiryTimer = setTimeout(() => watchExpiry(expires), Math.min(remaining, 2147483647));
   }
   function start() {
     if (loaded || location.protocol !== 'https:') return;
@@ -62,7 +78,9 @@
   function choose(choice) {
     const wasLoaded = loaded;
     accepted = choice === 'granted';
-    try { localStorage.setItem(key, JSON.stringify({ choice, expires: Date.now() + lifetime })); } catch (_) {}
+    const expires = Date.now() + lifetime;
+    try { localStorage.setItem(key, JSON.stringify({ choice, expires })); } catch (_) {}
+    watchExpiry(expires);
     if (accepted) start();
     else {
       window['ga-disable-' + id] = true;
@@ -84,9 +102,11 @@
       location.reload();
     }
   });
+  window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
   const choice = readChoice();
-  accepted = choice === 'granted';
+  accepted = choice?.choice === 'granted';
   if (accepted) start();
-  else if (!choice) show();
-  else clearCookies();
+  else { clearCookies(); if (!choice) show(); }
+  if (choice) watchExpiry(choice.expires);
 })();
+

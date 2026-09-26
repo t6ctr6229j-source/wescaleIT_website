@@ -10,12 +10,20 @@
 - Verbraucherstreitbeilegung aus den anderen drei Impressen desselben Anbieters übernommen.
 - Spline/jsDelivr: Interessenabwägung und konkrete Übermittlungsgrundlage noch prüfen; die bestehende Animation wurde nicht geändert.
 
-## Vom Betreiber noch zu bestätigen
+## Nachgereichte Nachweise vom 26. September 2026
 
-- Tatsächliche GA4-Aufbewahrung je Property (Nutzer-/Ereignisdaten, Zurücksetzen bei neuer Aktivität), Datenfreigaben, verknüpfte Ads-Produkte und erweiterte Messung. Konkrete serverseitige Löschfristen wurden nicht erfunden oder im Google-Konto geändert. Die Datenschutzerklärung bleibt in diesem Punkt zu vervollständigen.
-- Bestand und Geltung der AV-Verträge mit Google, united-domains und dem jeweiligen Formulardienst; tatsächlich verwendete Übermittlungsgrundlagen.
-- Ist ein Datenschutzbeauftragter bestellt? Falls ja, bestätigte Kontaktadresse in allen vier Datenschutzerklärungen ergänzen. Psoydo nennt bereits datenschutz@wescaleit.com.
-- Aktueller Registerauszug: Registergericht, HRB, Vertretung und Aufsichtsrat. Keine ungeprüfte Änderung dieser Stammdaten.
+- Registerauszug vom 9. Juli 2026: wescaleIT AG, Amtsgericht Stuttgart HRB 755825, Sitz Ostfildern, Geschäftsanschrift Magirus-Deutz-Straße 12, 89077 Ulm. Alleiniger Vorstand Florian Zegar. Alexander Ennen und Jörg Thomas Pech haben jeweils Einzelprokura; die bisherige Angabe Gesamtprokura wurde korrigiert. Weitergehende Befugnisse Ennen sind im Register dokumentiert.
+- Stephan Unser als Aufsichtsratsvorsitzender vom Betreiber bestätigt. Keine erneute Bestätigung der übrigen Aufsichtsratsmitglieder aus dem Register abgeleitet.
+- Betreiber bestätigt Abschluss der Standardverträge mit den eingesetzten Anbietern. united-domains-AVV Version 1.5.11 liegt für wescaleIT AG vor, einschließlich Unterauftragnehmern und TOMs. Anlage 2, Abschnitt 4.1 nennt für die Auftragsverarbeitung ausschließlich die EU. Der vorgelegte Vertrag wird nicht in das Repository übernommen.
+- Tally: Standard-DPA als Vertragsgrundlage bestätigt. Laut Tally wird er bei professioneller Nutzung mit den Kontobedingungen angenommen; eine separate Unterschrift ist nicht erforderlich. Gilt für die Tally-Nutzung bei CISO2Hero und Silverback; nicht für den entfernten Psoydo-Dienst Typeform.
+- Google: Abschluss der Standardverträge laut Betreiber; keine gesonderte Kontrolle des Annahmestatus im Google-Konto durchgeführt.
+- Analytics-Screenshot: Ereignisdaten 2 Monate, Nutzerdaten 14 Monate, Zurücksetzen bei neuer Nutzeraktivität aktiviert. Property-Name und Mess-ID sind im Bild nicht sichtbar. Diese Werte werden bis zur Zuordnung nicht pauschal in alle vier Datenschutzerklärungen übernommen. Cookie-Laufzeit und Kontoeinstellung sind verschiedene Fristen.
+
+## Verbleibende Prüfpunkte
+
+- Gelten die abgebildeten GA4-Aufbewahrungseinstellungen für alle vier Properties? Mess-IDs: wescaleIT G-7QYEF752NM, Psoydo G-EYFT82SFN7, CISO2Hero G-2Z0DKLDG8P, Silverback G-RWGM8X6QGH. Anschließend konkrete serverseitige Fristen ergänzen. Datenfreigaben, Ads-Verknüpfungen und erweiterte Messung sind damit nicht geprüft.
+- Ist ein Datenschutzbeauftragter bestellt und ist datenschutz@wescaleit.com dessen bestätigte Kontaktadresse? Psoydo enthält bereits diese Aussage; die übrigen Texte sind nach Bestätigung abzugleichen.
+- Spline: nur Standardvertrag laut Betreiber. Die geprüften öffentlichen Bedingungen und Datenschutzhinweise belegen weder einen konkreten AVV für die Einbettung noch eine konkrete Übermittlungsgrundlage für deren Besucherdaten. Die Datenschutzhinweise nennen US-Verarbeitung. Rolle des Anbieters, tatsächliche Einbettungsabrufe einschließlich jsDelivr, etwaige Speicherung/Zugriffe im Endgerät und geeignete Übermittlungsgrundlage bleiben gezielt zu klären. Die bestehende Animation wurde nicht geändert; ein Standard-Nutzungsvertrag allein ist hier kein Nachweis einer abgeschlossenen Datenschutzprüfung.
 
 ## Prüfung
 
@@ -33,3 +41,8 @@ Nach Veröffentlichung: frisches Browserprofil, keine Google-Anfragen vor Zustim
 - https://policies.google.com/privacy/frameworks?hl=de
 - https://policies.google.com/technologies/cookies?hl=de
 - https://support.google.com/analytics/answer/7667196?hl=de
+
+- https://tally.so/help/data-processing-agreement
+- https://tally.so/help/gdpr
+- https://spline.design/terms
+- https://spline.design/privacy

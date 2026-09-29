@@ -29,3 +29,5 @@ Datenschutz, Impressum, Einwilligungs-JavaScript und Karriereinhalte werden durc
 Schema Markup Validator: vollständigen identischen JSON-LD-Graphen als Code-Snippet geprüft, Organization mit eingebetteten drei Marken und PostalAddress erkannt, **0 Fehler, 0 Warnungen**. Kein Anspruch auf einen bestimmten Google-Rich-Result-Typ.
 
 `docs/responsive-review.html` ist eine reine Vorschau-/QA-Seite mit eingebetteter Live-Website und wählbarer Frame-Breite (390/768/1280 px). Sie gehört nicht zum Produktions-Build. Damit können die tatsächlichen responsiven Breakpoints im verfügbaren Desktop-Prüfbrowser geprüft werden.
+
+Live-QA erkannte alte Browser-CSS trotz neuem HTML. Produktions-Build ergänzt daher Inhalts-Hashes als Queryparameter für lokale CSS-/JS-Dateien sowie Cache-Control no-cache für HTML/JSON/XML. So werden zusammengehörige Versionen geladen, ohne vorhandene Einwilligungslogik zu verändern.

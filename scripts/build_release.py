@@ -4,6 +4,7 @@ Usage: python3 scripts/build_release.py [--production]
 Only --production opens indexing, after checking known launch dependencies.
 """
 import argparse
+import hashlib
 import json
 import os
 from html import escape
@@ -55,6 +56,12 @@ def build(production=False):
         meta = '<meta name="robots" content="' + ('index, follow' if indexable else 'noindex, nofollow') + '">'
         if name != '404.html':
             meta += f'<link rel="canonical" href="{escape(canonical)}"><meta property="og:url" content="{escape(canonical)}">'
+        # Version local styles/scripts so cached assets cannot outlive their matching HTML.
+        def version_asset(match):
+            attribute, asset = match.groups()
+            digest = hashlib.sha256((ROOT / asset).read_bytes()).hexdigest()[:12]
+            return f'{attribute}="{asset}?v={digest}"'
+        content = re.sub(r'(href|src)="((?:css|js)/[^"?]+\.(?:css|js))"', version_asset, content)
         # Root-relative assets also work when the error document serves a nested URL.
         content = re.sub(r'(href|src)="(?![a-zA-Z][a-zA-Z0-9+.-]*:|/|#)([^\"]+)"', r'\1="/\2"', content)
         content = re.sub(r'(href=")/index\.html', r'\1/', content)
@@ -68,6 +75,11 @@ def build(production=False):
     (OUT / 'robots.txt').write_text('User-agent: *\n' + ('Allow: /\nSitemap: ' + ORIGIN + '/sitemap.xml\n' if production else 'Disallow: /\n'))
     (OUT / '.htaccess').write_text('''Options -Indexes -MultiViews
 DirectoryIndex index.html
+<IfModule mod_headers.c>
+<FilesMatch "[.](html|json|xml)$">
+Header set Cache-Control "no-cache"
+</FilesMatch>
+</IfModule>
 ErrorDocument 404 /404.html
 RewriteEngine On
 RewriteBase /

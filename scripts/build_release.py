@@ -101,7 +101,7 @@ RewriteCond %{THE_REQUEST} \\s/+index\\.html[\\s?] [NC]
 RewriteRule ^index\\.html$ / [R=301,L]
 RewriteCond %{THE_REQUEST} \\s/+([^?\\ ]+)\\.html[\\s?] [NC]
 RewriteRule ^(.+)\\.html$ /$1 [R=301,L]
-RewriteRule ^(ueber-uns|karriere|kontakt|job-informationssicherheit|marke-fcth|marke-silverback|marke-psoydo|impressum|datenschutz|404)/?$ /$1.html [END]
+RewriteRule ^(ueber-uns|florian-zegar|karriere|kontakt|job-informationssicherheit|marke-fcth|marke-silverback|marke-psoydo|impressum|datenschutz|404)/?$ /$1.html [END]
 ''')
     print(f'Built {len(pages)} pages in {OUT} ({"production" if production else "draft; noindex"}).')
     if issues:
@@ -112,3 +112,4 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--production', action='store_true')
     build(parser.parse_args().production)
+

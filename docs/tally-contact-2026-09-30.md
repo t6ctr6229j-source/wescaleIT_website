@@ -1,7 +1,9 @@
-# Kontaktformular: vor Veröffentlichung abschließen
+# Kontaktformular: Veröffentlichung am 30. September 2026
 
-Formular ja1WdE ist ein Entwurf im verbundenen Workspace wQEMyG. Name, E-Mail, Unternehmen, Nachricht, Datenschutzhinweis und Danke-Seite sind angelegt. Auswahlfrage FCTH / Silverback / Psoydo fehlt: Der Connector lehnt die dokumentierten Auswahltypen durch Schema-/Workspace-Validierung ab. Keine Veröffentlichungsfunktion ist in der verfügbaren Tally-Anbindung vorhanden.
+Formular ja1WdE ist im verbundenen Workspace wQEMyG veröffentlicht und geöffnet. Veröffentlichung vom Betreiber bestätigt und über die Tally-Anbindung geprüft.
 
-Vor Merge: Themenauswahl ergänzen, im beabsichtigten Benutzerkonto prüfen und Formular in Tally veröffentlichen. Danach Formularansicht, Pflichtfelder, Absenden und Website-Einbettung inklusive Freigabe/Widerruf prüfen. Keine Benachrichtigungs-E-Mails oder externen Integrationen eingerichtet. Kein Testdatensatz versendet.
+Das veröffentlichte Formular enthält Name, E-Mail, Unternehmen sowie die Themenauswahl From CISO to HERO, Silverback Network, Psoydo und Etwas ganz anderes. Das ursprünglich vorbereitete Nachrichtenfeld wurde durch den Betreiber entfernt; Website und Datenschutzhinweise beschreiben den tatsächlichen Umfang. Keine Änderungen am veröffentlichten Formular vorgenommen.
 
-Die vorhandenen Silverback-Formulare pbgYgP und yPO8Od sind im selben verbundenen Workspace veröffentlicht und stimmen mit den Live-Einbindungen überein. Keine Duplikate erzeugt; keine vorhandenen Formulare geändert. Die Identität des parallel im Browser angemeldeten Kontos konnte nicht abgeglichen werden.
+Die Einbettung lädt erst nach eigener Freigabe, unabhängig von Analytics. Deaktivieren entfernt den iframe; direkte Tally- und E-Mail-Links bleiben verfügbar. Höhenmeldungen werden nur vom erwarteten iframe und der Tally-Origin akzeptiert. JavaScript-Syntax und isolierte Ablaufprüfung (Laden, Mehrfachklick, Deaktivieren, erneutes Laden, Herkunft der Höhenmeldungen) geprüft. Kein Testdatensatz versendet, keine Benachrichtigungs-E-Mails oder externen Integrationen eingerichtet.
+
+Die bestehenden Silverback-Formulare pbgYgP und yPO8Od sind im selben verbundenen Workspace veröffentlicht und stimmen mit den Live-Einbindungen überein. Keine Duplikate erzeugt und keine bestehenden Formulare geändert.

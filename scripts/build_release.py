@@ -89,6 +89,10 @@ RewriteRule ^ https://wescaleit.com%{REQUEST_URI} [R=301,L]
 RewriteRule ^infosec/?$ https://www.ciso2hero.com/beratung.html [R=301,L]
 RewriteRule ^isms/?$ https://www.ciso2hero.com/beratung.html [R=301,L]
 RewriteRule ^itxm/?$ https://www.silverback-network.com/ [R=301,L]
+# Former enquiry forms now lead to the corresponding current entry point.
+RewriteRule ^bedarf-ergruenden-itxm/?$ https://www.silverback-network.com/ [R=301,L]
+RewriteRule ^bedarf-ergruenden-karriere/?$ /karriere [R=301,L]
+RewriteRule ^bedarf-ergruenden-addons/?$ /kontakt#kontaktformular [R=301,L,NE]
 <FilesMatch "^\\.">
 Require all denied
 </FilesMatch>

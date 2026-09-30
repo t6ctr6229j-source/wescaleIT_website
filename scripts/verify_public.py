@@ -17,6 +17,14 @@ try:
     for path, marker in [('/', 'No bullshit!'), ('/impressum', 'HRB 755825'), ('/datenschutz', 'G-7QYEF752NM'), ('/robots.txt', 'Allow: /'), ('/sitemap.xml', 'https://wescaleit.com/karriere')]:
         with fresh(path) as r:
             assert marker in r.read().decode(), path
+    for old_path, expected in [
+        ('/bedarf-ergruenden-itxm', 'https://www.silverback-network.com/'),
+        ('/bedarf-ergruenden-karriere', origin + '/karriere'),
+        ('/bedarf-ergruenden-addons', origin + '/kontakt'),
+    ]:
+        with fresh(old_path) as response:
+            actual = response.url.split('#')[0].split('?')[0]
+            assert actual == expected, (old_path, actual, expected)
     try:
         fresh('/__release-check__/missing-page')
     except HTTPError as e:

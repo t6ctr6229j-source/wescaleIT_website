@@ -17,7 +17,7 @@ Alle Seiten haben denselben ruhigen Footer mit Marken-, Unternehmens- und Rechts
 
 Originale Farbwelt (Midnight, Blau, Mint, Peach, Gelb), lokal geladene Neue Machina und Space Grotesk. Das gemeinsame System steht in `css/dachmarke.css`. Die Seiten laden keine alten Webflow-Layouts mehr; so konkurrieren keine alten Abstände, Bildgrößen oder Schriftregeln mit dem neuen Aufbau.
 
-Die originale Spline-Szene im Einstieg wird weiterhin mit `js/webflow.js` geladen. Ohne Netzwerk oder bei reduzierter Bewegung bleibt der farbige Hintergrund. Markenflächen und Buttons haben Auftritts- bzw. Hover-Animationen. Reduzierte Bewegung wird in CSS berücksichtigt. Die alten Scroll-Bildwechsel und endlosen Bildstrecken wurden durch ruhigere, direkt sichtbare Inhalte ersetzt.
+Die drei originalen Spline-Szenen werden mit `js/hero-blob.js` geladen: Startseite (Original), Haltung & Team (aus InFoSec) und Karriere (aus ITxM). Jede Seite lädt genau eine Szene. Lokale Standbilder bleiben ohne JavaScript, während des Ladens, bei Ladefehlern und bei reduzierter Bewegung sichtbar. Bei initial reduzierter Bewegung wird Spline nicht angefordert. Außerhalb des sichtbaren Bereichs und in verborgenen Tabs pausiert die Animation. `css/hero-blob.css` erhält die Desktop-Komposition der Startseite und begrenzt die mobile Zeichenfläche. Markenflächen und Buttons haben Auftritts- bzw. Hover-Animationen; reduzierte Bewegung wird berücksichtigt.
 
 Navigation und Datum: `js/dachmarke.js`. Alle Inhalte, Markenlinks, Stellen und FAQ funktionieren ohne JavaScript; auf Mobilgeräten bleibt die Navigation dann aufgeklappt.
 

@@ -19,6 +19,7 @@ jobs:
           python3 scripts/check_authorship.py
           python3 scripts/check_site.py
           node --check js/dachmarke.js
+          node --check js/hero-blob.js
           node scripts/check_analytics.cjs
           python3 scripts/build_release.py --production
       - uses: actions/upload-artifact@v4
@@ -38,4 +39,3 @@ jobs:
         run: /usr/bin/python3 scripts/deploy_sftp.py
       - name: Check public domain routing
         run: python3 scripts/verify_public.py
-

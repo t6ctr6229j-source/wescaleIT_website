@@ -1,0 +1,28 @@
+/* Original desktop composition; bounded mobile canvas instead of a 360vw crop. */
+.blob-scene{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.blob-stage{position:absolute;inset:0 0 0 16vw;width:100vw;height:100%;transform:scale(.8)}
+.blob-stage canvas,.blob-poster{position:absolute;inset:0;display:block;width:100%;height:100%}
+.blob-poster{object-fit:contain}
+.blob-stage canvas{opacity:0}
+.blob-scene.is-ready canvas{opacity:1}
+.blob-scene.is-ready .blob-poster{visibility:hidden}
+.page-hero.has-blob{position:relative;isolation:isolate;overflow:hidden}
+.page-hero.has-blob>.wrap{position:relative;z-index:1}
+.page-hero.has-blob .blob-scene{opacity:.7}
+.page-hero.has-blob .blob-stage{left:48%;width:65%;transform:none}
+@media(max-width:991px){
+  .original-hero .blob-stage{inset:auto -10% 0 auto;width:85%;height:70%;transform:none}
+  .original-hero .blob-scene{opacity:.85}
+  .page-hero.has-blob .blob-stage{left:40%;width:80%}
+}
+@media(max-width:760px){
+  .original-hero .blob-stage{inset:auto -2rem 0 auto;width:1200px;height:900px;transform:scale(.4);transform-origin:bottom right}
+  .original-hero .blob-scene{opacity:.8}
+  .page-hero.has-blob .blob-stage{left:20%;width:110%}
+  .page-hero.has-blob .blob-scene{opacity:.5}
+}
+@media(max-width:479px){.original-hero .blob-stage{transform:scale(.32)}}
+@media(prefers-reduced-motion:reduce){
+  .blob-scene.is-ready canvas{opacity:0}
+  .blob-scene.is-ready .blob-poster{visibility:visible}
+}

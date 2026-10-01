@@ -11,7 +11,9 @@
   let visible = true;
   let ready = false;
   function resize() {
-    if (ready) app.setSize(canvas.parentElement.clientWidth, canvas.parentElement.clientHeight);
+    if (!ready || !window.matchMedia('(max-width: 760px)').matches) return;
+    const stage = canvas.parentElement;
+    app.setSize(stage.clientWidth, stage.clientHeight);
   }
   function update() {
     const animate = ready && !motion.matches;

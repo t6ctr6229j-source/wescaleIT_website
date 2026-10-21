@@ -1,0 +1,27 @@
+name: Verify wescaleIT Cloudflare Pages preview
+on:
+  pull_request:
+    paths:
+      - 'scripts/build-cloudflare-pages.sh'
+      - '.github/workflows/cloudflare-pages-qa.yml'
+      - 'images/**'
+      - '*.html'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Cloudflare Pages preview
+        run: sh scripts/build-cloudflare-pages.sh
+      - name: Assert noindex scoped to preview and Apache config removed
+        run: |
+          test -f cf-dist/404.html
+          test -f cf-dist/kontakt.html
+          test ! -f cf-dist/.htaccess
+          grep -q 'https://wescaleit-website.pages.dev/\*' cf-dist/_headers
+          grep -q 'X-Content-Type-Options: nosniff' cf-dist/_headers
+          node --check cf-dist/js/contact-form.js
+          node --check cf-dist/js/analytics.js

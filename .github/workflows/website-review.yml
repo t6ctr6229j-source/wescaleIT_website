@@ -16,6 +16,7 @@ jobs:
           python3 scripts/check_authorship.py
           python3 scripts/check_site.py
           node --check js/contact-form.js
+          python3 -m py_compile scripts/verify_public.py
           node --check js/dachmarke.js
           node --check js/hero-blob.js
           node scripts/check_analytics.cjs

@@ -1,4 +1,3 @@
-const crypto=require('node:crypto');
 const { chromium, webkit, devices } = require('playwright');
 const BASE_URL=process.env.BASE_URL || 'https://wescaleit.com';
 
@@ -23,8 +22,6 @@ async function inspect(browserName, engine, viewport) {
   const readings=[];
   for(const afterMs of [2000,10000,23000]){
     await page.waitForTimeout(afterMs-(readings.at(-1)?.at||0));
-    const shot=await page.locator('.blob-stage canvas').screenshot({timeout:20000}).catch(e=>{errors.push('Screenshot: '+String(e).slice(0,150));return null;});
-    const canvasHash=shot?crypto.createHash('sha256').update(shot).digest('hex').slice(0,18):null;
     const data=await page.evaluate(at=>{
       const scene=document.querySelector('[data-blob-scene]');
       const stage=scene.querySelector('.blob-stage'), canvas=scene.querySelector('canvas'), poster=scene.querySelector('.blob-poster');
@@ -35,15 +32,21 @@ async function inspect(browserName, engine, viewport) {
         canvas:{width:canvas.width,height:canvas.height,opacity:getComputedStyle(canvas).opacity},poster:{visibility:getComputedStyle(poster).visibility},
         gpuSupported:!!document.createElement('canvas').getContext('webgl'),
         docHidden:document.hidden,
-        objects:at===2000&&window.__splineDebugApp?.getAllObjects
-          ?window.__splineDebugApp.getAllObjects().slice(0,18).map(o=>({name:o.name,uuid:o.uuid,rotation:o.rotation?{x:o.rotation.x,y:o.rotation.y,z:o.rotation.z}:null}))
+        trackedObjects:window.__splineDebugApp?.getAllObjects
+          ?window.__splineDebugApp.getAllObjects().filter(o=>/Unternehmen|mesh_100/i.test(o.name)).slice(0,4)
+            .map(o=>({name:o.name,rotation:o.rotation?{x:o.rotation.x,y:o.rotation.y,z:o.rotation.z}:null}))
           :undefined
       };
     },afterMs);
-    readings.push({...data,canvasHash});
+    readings.push(data);
 
   }
   const readyReadings=readings.filter(x=>x.ready);
+  const loaded=readings.filter(x=>x.ready && x.trackedObjects?.length);
+  if(loaded.length>=2){
+    const ys=loaded.map(x=>x.trackedObjects[0].rotation?.y).filter(Number.isFinite);
+    console.log('TRACKED_ROTATION '+JSON.stringify({browserName,ys}));
+  }
   if(readings.some(x=>x.stageWidth>760||x.stageHeight>550)) {
     throw new Error(browserName + ': Spline still uses an oversized mobile canvas');
   }

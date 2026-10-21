@@ -5,15 +5,22 @@
   if (!scene) return;
   const canvas = scene.querySelector('canvas');
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mobile = window.matchMedia('(max-width: 760px)');
+  let manuallySized = false;
   let app;
   let loading = false;
   let failed = false;
   let visible = true;
   let ready = false;
   function resize() {
-    if (!ready || !window.matchMedia('(max-width: 760px)').matches) return;
+    // Mobile uses a small backing surface even when its CSS visual is scaled.
+    // After a phone/tablet orientation change, keep the manually-sized
+    // Spline canvas in sync (setSize disables the runtime's auto-resize).
+    if (!ready || (!mobile.matches && !manuallySized)) return;
     const stage = canvas.parentElement;
+    if (stage.clientWidth < 1 || stage.clientHeight < 1) return;
     app.setSize(stage.clientWidth, stage.clientHeight);
+    manuallySized = true;
   }
   function update() {
     const animate = ready && !motion.matches;
@@ -56,6 +63,12 @@
   });
   motion.addEventListener('change', () => { update(); load(); });
   document.addEventListener('visibilitychange', update);
+  // Safari may restore a page from the back-forward cache without a fresh
+  // visibilitychange. Resume Spline after pageshow and any viewport rotation.
+  window.addEventListener('pageshow', () => {
+    resize();
+    update();
+  });
   if ('ResizeObserver' in window) new ResizeObserver(resize).observe(canvas.parentElement);
   else window.addEventListener('resize', resize);
   if ('IntersectionObserver' in window) {

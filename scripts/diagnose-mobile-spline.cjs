@@ -1,5 +1,6 @@
 const crypto=require('node:crypto');
 const { chromium, webkit, devices } = require('playwright');
+const BASE_URL=process.env.BASE_URL || 'https://wescaleit.com';
 
 async function inspect(browserName, engine, viewport) {
   const browser = await engine.launch({
@@ -17,7 +18,7 @@ async function inspect(browserName, engine, viewport) {
   });
   page.on('pageerror',err=>errors.push('JS: '+err.message));
   page.on('console',msg=>{if(msg.type()==='error')errors.push('Console: '+msg.text().slice(0,180));});
-  const response=await page.goto('https://wescaleit.com/',{waitUntil:'domcontentloaded',timeout:40000});
+  const response=await page.goto(BASE_URL+'/',{waitUntil:'domcontentloaded',timeout:40000});
   await page.locator('[data-blob-scene] canvas').waitFor({state:'attached',timeout:15000});
   const readings=[];
   for(const afterMs of [2000,10000,23000]){
@@ -42,13 +43,17 @@ async function inspect(browserName, engine, viewport) {
     readings.push({...data,canvasHash});
 
   }
+  const readyReadings=readings.filter(x=>x.ready);
+  if(readings.some(x=>x.stageWidth>760||x.stageHeight>550)) {
+    throw new Error(browserName + ': Spline still uses an oversized mobile canvas');
+  }
   console.log(JSON.stringify({browserName,viewport,status:response.status(),readings,errors:errors.slice(0,8)}));
   await browser.close();
 }
 async function inspectBadges() {
   const browser=await chromium.launch({headless:true});
   const page=await browser.newPage({viewport:{width:1180,height:820}});
-  await page.goto('https://wescaleit.com/',{waitUntil:'domcontentloaded',timeout:25000});
+  await page.goto(BASE_URL+'/',{waitUntil:'domcontentloaded',timeout:25000});
   const bounds=await page.locator('.employer-awards img').evaluateAll(async images => {
     await Promise.all(images.map(i=>i.decode()));
     return images.map(img=>{
@@ -70,6 +75,12 @@ async function inspectBadges() {
     });
   });
   console.log('LOGO_BOUNDS '+JSON.stringify(bounds));
+  const byYear=Object.fromEntries(bounds.map(b=>[b.year,b]));
+  const adjacent=byYear['2026'],latest=byYear['2027'];
+  if(!adjacent||!latest)throw new Error('Missing year badges');
+  if(Math.abs(adjacent.widthPercent-latest.widthPercent)>3 || Math.abs(adjacent.heightPercent-latest.heightPercent)>3) {
+    throw new Error('2027 artboard is still inconsistent with 2026');
+  }
   await browser.close();
 }
 (async()=>{

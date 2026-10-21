@@ -69,3 +69,16 @@ jobs:
                   except URLError as exc:
                       print('PROBE path='+path,'query='+str(bool(suffix)),'network-error='+str(exc),flush=True)
           PY
+
+      - name: Check security headers and release commit on public host
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --max-time 25 --dump-header /tmp/wescale-prod-headers \
+            --output /tmp/wescale-prod-body 'https://wescaleit.com/'
+          echo 'Observed public security headers:'
+          grep -iE '^(strict-transport-security:|x-content-type-options:|referrer-policy:|x-frame-options:|permissions-policy:|content-security-policy:)' /tmp/wescale-prod-headers || true
+          for header in 'strict-transport-security:' 'x-content-type-options:' 'referrer-policy:' 'x-frame-options:' 'permissions-policy:' 'content-security-policy:'; do
+            if ! grep -iq "^$header" /tmp/wescale-prod-headers; then echo "WARNING: Missing $header from production"; fi
+          done
+          curl -fsSL --max-time 25 'https://wescaleit.com/release.json' | python3 -c 'import sys,json;print("Published commit:",json.load(sys.stdin).get("commit"))'

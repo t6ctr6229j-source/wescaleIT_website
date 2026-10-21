@@ -76,6 +76,13 @@ def build(production=False):
     (OUT / '.htaccess').write_text('''Options -Indexes -MultiViews
 DirectoryIndex index.html
 <IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set X-Frame-Options "SAMEORIGIN"
+Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+Header always set Strict-Transport-Security "max-age=31536000"
+# Start with a non-breaking CSP baseline; tighten script policies only after Tally/GA4/Spline QA.
+Header always set Content-Security-Policy "base-uri 'self'; object-src 'none'; frame-ancestors 'self'; upgrade-insecure-requests"
 <FilesMatch "[.](html|json|xml)$">
 Header set Cache-Control "no-cache"
 </FilesMatch>

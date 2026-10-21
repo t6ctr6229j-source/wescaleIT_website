@@ -43,5 +43,9 @@ jobs:
           script = (root / 'js' / 'contact-form.js').read_text(encoding='utf-8')
           assert "event.origin !== 'https://tally.so'" in script
           assert 'frame.src' in script
+          htaccess = (root / '.htaccess').read_text(encoding='utf-8')
+          for directive in ('X-Content-Type-Options', 'Referrer-Policy', 'X-Frame-Options',
+                            'Permissions-Policy', 'Strict-Transport-Security', 'Content-Security-Policy'):
+              assert 'Header always set ' + directive in htaccess, 'Missing security header: ' + directive
           print('PASS: award assets, contact consent, Tally origin check')
           PY

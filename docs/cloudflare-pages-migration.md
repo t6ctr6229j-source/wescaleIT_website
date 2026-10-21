@@ -12,3 +12,5 @@ This branch prepares an independent Cloudflare Pages preview without changing li
 - Never move `wescaleit.com` nameservers until the full authoritative DNS zone has been independently compared, particularly Microsoft 365 MX, SPF, DKIM, DMARC, Autodiscover, SIP, vendor verification and Apple domain records. Imported web/service DNS entries are DNS-only for now.
 - The existing SFTP deployment still automatically runs for pushes to `main`; do not merge the rollout until the origin host key is verified or United Domains deployment is disabled after cutover.
 - The future domain cutover requires host-specific redirects and verification that no staging `noindex` header applies to public `wescaleit.com`.
+
+Cloudflare Git connection smoke test: 2026-10-21. This commit should trigger the independent Pages preview deployment; it does not touch DNS or the current United Domains website.

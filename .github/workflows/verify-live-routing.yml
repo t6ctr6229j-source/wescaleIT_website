@@ -1,0 +1,29 @@
+name: Diagnose wescaleIT live routing
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/verify-live-routing.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe live domain, headers and deployed badge
+        shell: bash
+        run: |
+          set -uo pipefail
+          for url in \
+            "https://wescaleit.com/" \
+            "https://www.wescaleit.com/" \
+            "https://wescaleit.com/release.json?probe=github" \
+            "https://wescaleit.com/images/kununu-top-company-2027-aligned.svg" \
+            "https://wescaleit.com/kontakt" \
+            "https://wescaleit.com/robots.txt"; do
+            echo "URL: $url"
+            curl -sS -L --max-redirs 8 --max-time 28 --dump-header /tmp/wescale-headers --output /tmp/wescale-body --write-out 'HTTP=%{http_code} FINAL=%{url_effective} REMOTE_IP=%{remote_ip} TLS_VERIFY=%{ssl_verify_result}\n' "$url" || echo "Transport failed"
+            grep -iE '^(HTTP/|server:|location:|cf-ray:|content-security-policy:|x-content-type-options:)' /tmp/wescale-headers | tail -n 9 || true
+            if echo "$url" | grep -q 'release.json'; then head -c 180 /tmp/wescale-body | tr '\n' ' '; echo; fi
+          done

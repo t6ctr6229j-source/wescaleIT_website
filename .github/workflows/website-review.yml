@@ -1,0 +1,47 @@
+name: Website content and security QA
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate site and JavaScript
+        run: |
+          python3 scripts/check_authorship.py
+          python3 scripts/check_site.py
+          node --check js/contact-form.js
+          node --check js/dachmarke.js
+          node --check js/hero-blob.js
+          node scripts/check_analytics.cjs
+      - name: Assemble live-like release
+        run: python3 scripts/build_release.py --production
+      - name: Verify all three kununu badges and Tally consent
+        run: |
+          python3 - <<'PY'
+          import re
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+          root = Path('dist/wescaleit')
+          html = (root / 'index.html').read_text(encoding='utf-8')
+          assert '2025, 2026 &amp; 2027.' in html
+          for year in (2025, 2026, 2027):
+              name = f'kununu-top-company-{year}-aligned.svg'
+              asset = root / 'images' / name
+              assert asset.is_file(), name
+              svg = ET.parse(asset).getroot()
+              assert svg.tag.endswith('svg')
+              assert svg.attrib.get('viewBox'), name
+              assert f'alt="kununu Top Company {year}"' in html
+          assert html.count('https://www.kununu.com/de/wescaleit1') >= 3
+          assert 'Formular laden' in (root / 'kontakt.html').read_text(encoding='utf-8')
+          script = (root / 'js' / 'contact-form.js').read_text(encoding='utf-8')
+          assert "event.origin !== 'https://tally.so'" in script
+          assert 'frame.src' in script
+          print('PASS: award assets, contact consent, Tally origin check')
+          PY

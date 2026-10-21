@@ -1,0 +1,30 @@
+name: Diagnose mobile Spline canvas
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/spline-mobile-qa.yml'
+      - 'scripts/diagnose-mobile-spline.cjs'
+      - 'js/hero-blob.js'
+      - 'css/hero-blob.css'
+      - 'images/kununu-top-company-2027-aligned.svg'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install browsers
+        run: |
+          npm install --no-save --package-lock=false playwright@1.58.2
+          npx playwright install --with-deps chromium webkit
+      - name: Verify mobile Spline and all three badge ink bounds on branch build
+        run: |
+          python3 scripts/build_release.py --production
+          python3 -m http.server 8765 --directory dist/wescaleit >/tmp/wescaleit-qa-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" || true' EXIT
+          sleep 2
+          BASE_URL=http://127.0.0.1:8765 node scripts/diagnose-mobile-spline.cjs

@@ -25,3 +25,22 @@ jobs:
           grep -q 'X-Content-Type-Options: nosniff' cf-dist/_headers
           node --check cf-dist/js/contact-form.js
           node --check cf-dist/js/analytics.js
+  smoke:
+    needs: check
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify live Pages preview URLs and preview-only security headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://wescaleit-website.pages.dev'
+          for route in '/' '/kontakt' '/karriere' '/ueber-uns' '/images/kununu-top-company-2027-aligned.svg' '/robots.txt' '/sitemap.xml'; do
+            code="$(curl --retry 3 -fsSL --max-time 30 --output /dev/null --write-out '%{http_code}' "$base$route")"
+            test "$code" = "200" || { echo "Unexpected $code at $base$route"; exit 1; }
+          done
+          curl --retry 3 -fsSL --max-time 30 --dump-header /tmp/preview-headers --output /tmp/preview-index "$base/"
+          grep -iq '^x-robots-tag:.*noindex' /tmp/preview-headers
+          grep -iq '^x-content-type-options:.*nosniff' /tmp/preview-headers
+          unknown="$(curl -sSL --max-time 30 --output /dev/null --write-out '%{http_code}' "$base/some-path-never-present-4832")"
+          test "$unknown" = "404" || { echo "Expected HTTP 404, got $unknown"; exit 1; }
+          echo 'PASS: live Pages preview URLs, security, staging noindex and 404'

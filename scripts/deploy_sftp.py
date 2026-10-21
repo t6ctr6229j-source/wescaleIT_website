@@ -60,7 +60,7 @@ def deploy(sftp, root, run):
 
 
 def main():
-    required = ('UD_SFTP_HOST', 'UD_SFTP_USER', 'UD_SFTP_PASSWORD')
+    required = ('UD_SFTP_HOST', 'UD_SFTP_USER', 'UD_SFTP_PASSWORD', 'UD_SFTP_KNOWN_HOSTS')
     missing = [key for key in required if not os.environ.get(key)]
     if missing:
         raise SystemExit('Missing repository secrets: ' + ', '.join(missing))
@@ -69,13 +69,15 @@ def main():
         raise SystemExit('Run through GitHub Actions.')
     with paramiko.SSHClient() as client:
         client.load_system_host_keys()
-        known = os.environ.get('UD_SFTP_KNOWN_HOSTS', '').strip()
-        if known:
-            with tempfile.NamedTemporaryFile(mode='w') as f:
-                f.write(known + '\n'); f.flush(); client.load_host_keys(f.name)
-        else:
-            # Same first-connection trust convention as the other brand deployments.
-            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # A pre-verified SSH host key is mandatory; never trust a new host automatically.
+        known = os.environ['UD_SFTP_KNOWN_HOSTS'].strip()
+        if not known:
+            raise SystemExit('UD_SFTP_KNOWN_HOSTS must contain a verified known_hosts entry')
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8') as f:
+            f.write(known + '\n')
+            f.flush()
+            client.load_host_keys(f.name)
+        client.set_missing_host_key_policy(paramiko.RejectPolicy())
         client.connect(os.environ['UD_SFTP_HOST'], port=int(os.environ.get('UD_SFTP_PORT') or 22),
                        username=os.environ['UD_SFTP_USER'], password=os.environ['UD_SFTP_PASSWORD'],
                        look_for_keys=False, allow_agent=False, timeout=30, auth_timeout=30, banner_timeout=30)

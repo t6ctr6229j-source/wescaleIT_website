@@ -44,3 +44,28 @@ jobs:
                   except HTTPError as e:
                       print('CLIENT',ua or 'Python default','PATH',path,'STATUS',e.code,'SERVER',e.headers.get('Server'))
           PY
+
+      - name: Test exact production verifier paths and cachebuster
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError, URLError
+          from time import time_ns
+          origin='https://wescaleit.com'
+          paths=['/release.json','/','/impressum','/datenschutz','/robots.txt','/sitemap.xml',
+                 '/bedarf-ergruenden-itxm','/bedarf-ergruenden-karriere','/bedarf-ergruenden-addons',
+                 '/__release-check__/missing-page']
+          for path in paths:
+              for suffix in ('','?release_check='+str(time_ns())):
+                  req=Request(origin+path+suffix)
+                  try:
+                      with urlopen(req,timeout=20) as response:
+                          print('PROBE path='+path, 'query='+str(bool(suffix)),
+                                'status='+str(response.status), 'effective='+response.url,flush=True)
+                  except HTTPError as exc:
+                      print('PROBE path='+path,'query='+str(bool(suffix)),
+                            'status='+str(exc.code),'effective='+exc.url,flush=True)
+                  except URLError as exc:
+                      print('PROBE path='+path,'query='+str(bool(suffix)),'network-error='+str(exc),flush=True)
+          PY

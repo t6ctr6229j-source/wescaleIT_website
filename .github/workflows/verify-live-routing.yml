@@ -27,3 +27,20 @@ jobs:
             grep -iE '^(HTTP/|server:|location:|cf-ray:|content-security-policy:|x-content-type-options:)' /tmp/wescale-headers | tail -n 9 || true
             if echo "$url" | grep -q 'release.json'; then head -c 180 /tmp/wescale-body | tr '\n' ' '; echo; fi
           done
+
+      - name: Verify Python urllib behavior against the same URL
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError
+          for ua in (None, 'Mozilla/5.0 (compatible; wescaleIT-ReleaseVerifier/1.0; +https://wescaleit.com)'):
+              headers={} if ua is None else {'User-Agent':ua}
+              for path in ('/release.json', '/images/kununu-top-company-2027-aligned.svg'):
+                  request=Request('https://wescaleit.com'+path,headers=headers)
+                  try:
+                      with urlopen(request,timeout=20) as r:
+                          print('CLIENT',ua or 'Python default','PATH',path,'STATUS',r.status,'SERVER',r.headers.get('Server'))
+                  except HTTPError as e:
+                      print('CLIENT',ua or 'Python default','PATH',path,'STATUS',e.code,'SERVER',e.headers.get('Server'))
+          PY

@@ -31,6 +31,16 @@ jobs:
                   ds = [x for x in body.get('Answer',[]) if x.get('type') == 43]
                   print(domain, 'resolver='+resolver.split('//')[1].split('/')[0], 'parent-DS-count='+str(len(ds)))
                   if ds: failed=True
+          # Also record currently observed public delegations. These are not changed here.
+          for domain in domains:
+              for resolver in resolvers:
+                  url = resolver + '?' + urlencode({'name':domain,'type':'NS'})
+                  with urlopen(Request(url, headers={'Accept':'application/dns-json'}),timeout=25) as resp:
+                      answer = json.load(resp)
+                  if answer.get('Status') != 0:
+                      raise SystemExit(f'{domain}: NS lookup error {answer.get("Status")} from {resolver}')
+                  ns = sorted({x['data'].lower().rstrip('.') for x in answer.get('Answer',[]) if x.get('type') == 2})
+                  print(domain,'resolver='+resolver.split('//')[1].split('/')[0], 'name_servers_observed='+','.join(ns))
           if failed:
               raise SystemExit('BLOCKED: One or more active DS records require DNSSEC migration planning before delegating')
           print('PASS: no DS record reported for the three zones by either resolver')

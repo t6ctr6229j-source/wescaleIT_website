@@ -1,0 +1,67 @@
+name: wescaleIT Microsoft 365 and registrar DNS cutover preflight
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/m365-dns-cutover-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Independently query Cloudflare authoritative DNS records
+        shell: bash
+        run: |
+          set -euo pipefail
+          for nameserver in quinton.ns.cloudflare.com savanna.ns.cloudflare.com; do
+            echo "=== $nameserver ==="
+            dig +short @"$nameserver" wescaleit.com MX | sort > /tmp/mx
+            dig +short @"$nameserver" gdc.wescaleit.com MX | sort > /tmp/gdc-mx
+            dig +short @"$nameserver" wescaleit.com TXT > /tmp/txt
+            dig +short @"$nameserver" _dmarc.wescaleit.com TXT > /tmp/dmarc
+            dig +short @"$nameserver" autodiscover.wescaleit.com CNAME > /tmp/autodiscover
+            dig +short @"$nameserver" sip.wescaleit.com CNAME > /tmp/sip
+            dig +short @"$nameserver" lyncdiscover.wescaleit.com CNAME > /tmp/lync
+            dig +short @"$nameserver" _sip._tls.wescaleit.com SRV > /tmp/sip-srv
+            dig +short @"$nameserver" _sipfederationtls._tcp.wescaleit.com SRV > /tmp/federation-srv
+            dig +short @"$nameserver" cb.wescaleit.com A > /tmp/cb
+            dig +short @"$nameserver" test.dev.wescaleit.com A > /tmp/dev
+            cat /tmp/mx /tmp/autodiscover
+            grep -qF '0 wescaleit-com.mail.protection.outlook.com.' /tmp/mx
+            grep -qF '10 mx10.mailspamprotection.com.' /tmp/gdc-mx
+            grep -qF '20 mx20.mailspamprotection.com.' /tmp/gdc-mx
+            grep -qF '30 mx30.mailspamprotection.com.' /tmp/gdc-mx
+            grep -qF 'v=spf1 include:spf.protection.outlook.com -all' /tmp/txt
+            grep -qF 'v=DMARC1;p=quarantine;' /tmp/dmarc
+            grep -qF 'MS=ms35291675' /tmp/txt
+            grep -qF 'apple-domain-verification=' /tmp/txt
+            grep -qF 'autodiscover.outlook.com.' /tmp/autodiscover
+            grep -qF 'sipdir.online.lync.com.' /tmp/sip
+            grep -qF 'webdir.online.lync.com.' /tmp/lync
+            grep -qF '100 1 443 sipdir.online.lync.com.' /tmp/sip-srv
+            grep -qF '100 1 5061 sipfed.online.lync.com.' /tmp/federation-srv
+            grep -qFx '89.31.143.90' /tmp/cb
+            grep -qFx '118.70.171.157' /tmp/dev
+            echo "PASS: MX, SPF, DMARC, Autodiscover, Teams, M365 verification and independent subdomains at $nameserver"
+          done
+      - name: Read-only authoritative registry and public DNS state
+        shell: bash
+        run: |
+          set -euo pipefail
+          for registry in a.gtld-servers.net b.gtld-servers.net; do
+            echo "REGISTRY $registry"
+            dig +time=5 +tries=2 +norecurse +noall +answer +authority @"$registry" wescaleit.com NS
+            dig +time=5 +tries=2 +norecurse +noall +answer +authority @"$registry" wescaleit.com DS
+          done
+          python3 - <<'PY'
+          import json, urllib.parse, urllib.request
+          correct = {'quinton.ns.cloudflare.com', 'savanna.ns.cloudflare.com'}
+          for resolver in ['https://dns.google/resolve','https://cloudflare-dns.com/dns-query']:
+              req=urllib.request.Request(resolver+'?'+urllib.parse.urlencode({'name':'wescaleit.com','type':'NS'}),headers={'Accept':'application/dns-json'})
+              with urllib.request.urlopen(req,timeout=25) as res:
+                  data=json.load(res)
+              names={r['data'].lower().rstrip('.') for r in data.get('Answer',[]) if r.get('type')==2}
+              print('PUBLIC-NS',resolver,','.join(sorted(names)),'MATCH='+str(names==correct))
+          PY

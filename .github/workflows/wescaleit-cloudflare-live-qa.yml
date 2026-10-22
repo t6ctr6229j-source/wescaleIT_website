@@ -30,7 +30,8 @@ jobs:
           grep -iq 'content="index, follow"' /tmp/index-main
           grep -q 'https://wescaleit.com/' /tmp/index-main
           grep -q 'kununu-top-company-2027-aligned.svg?v=align-2027-2' /tmp/index-main
-          curl -fsSL --max-time 25 "$base/datenschutz" | grep -qF 'Cloudflare Pages'
+          curl -fsSL --max-time 25 --output /tmp/wescaleit-privacy "$base/datenschutz"
+          grep -qF 'Cloudflare Pages' /tmp/wescaleit-privacy
           code="$(curl -sSL --max-time 25 --output /dev/null --write-out '%{http_code}' "$base/wescaleit-missing-route-39402")"
           test "$code" = 404 || { echo "Expected 404, got $code"; exit 1; }
           for row in \

@@ -1,7 +1,6 @@
-name: Build and deploy wescaleIT
+name: Manual United Domains rollback deployment (wescaleIT)
+# Cloudflare Pages automatically deploys main. Keep legacy origin only as manual rollback.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read

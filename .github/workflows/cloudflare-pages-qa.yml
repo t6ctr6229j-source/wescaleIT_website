@@ -1,0 +1,66 @@
+name: Verify wescaleIT Cloudflare Pages preview
+on:
+  pull_request:
+    paths:
+      - 'scripts/build-cloudflare-pages.sh'
+      - '.github/workflows/cloudflare-pages-qa.yml'
+      - 'images/**'
+      - '*.html'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Cloudflare Pages preview
+        run: sh scripts/build-cloudflare-pages.sh
+      - name: Assert noindex scoped to preview and Apache config removed
+        run: |
+          test -f cf-dist/404.html
+          test -f cf-dist/kontakt.html
+          test ! -f cf-dist/.htaccess
+          test -s cf-dist/_redirects
+          grep -q '^/infosec https://www.ciso2hero.com/beratung.html 301' cf-dist/_redirects
+          grep -q '^/itxm https://www.silverback-network.com/ 301' cf-dist/_redirects
+          grep -q '^/bedarf-ergruenden-addons /kontakt#kontaktformular 301' cf-dist/_redirects
+          grep -q 'https://wescaleit-website.pages.dev/\*' cf-dist/_headers
+          grep -q 'X-Content-Type-Options: nosniff' cf-dist/_headers
+          node --check cf-dist/js/contact-form.js
+          node --check cf-dist/js/analytics.js
+  smoke:
+    needs: check
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Verify live Pages preview URLs and preview-only security headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://wescaleit-website.pages.dev'
+          for route in '/' '/kontakt' '/karriere' '/ueber-uns' '/images/kununu-top-company-2027-aligned.svg' '/robots.txt' '/sitemap.xml'; do
+            code="$(curl --retry 3 -fsSL --max-time 30 --output /dev/null --write-out '%{http_code}' "$base$route")"
+            test "$code" = "200" || { echo "Unexpected $code at $base$route"; exit 1; }
+          done
+          curl --retry 3 -fsSL --max-time 30 --dump-header /tmp/preview-headers --output /tmp/preview-index "$base/"
+          grep -iq '^x-robots-tag:.*noindex' /tmp/preview-headers
+          grep -iq '^x-content-type-options:.*nosniff' /tmp/preview-headers
+          unknown="$(curl -sSL --max-time 30 --output /dev/null --write-out '%{http_code}' "$base/some-path-never-present-4832")"
+          test "$unknown" = "404" || { echo "Expected HTTP 404, got $unknown"; exit 1; }
+          # Crucial: the old Apache redirects must survive migration to Pages.
+          # Read only the first 301; do not follow to third-party brands.
+          for row in \
+            '/infosec|https://www.ciso2hero.com/beratung.html' \
+            '/isms|https://www.ciso2hero.com/beratung.html' \
+            '/itxm|https://www.silverback-network.com/' \
+            '/bedarf-ergruenden-itxm|https://www.silverback-network.com/' \
+            '/bedarf-ergruenden-karriere|/karriere' \
+            '/bedarf-ergruenden-addons|/kontakt#kontaktformular'; do
+            from="${row%%|*}"
+            expected="${row#*|}"
+            headers="$(mktemp)"
+            curl -sS --max-time 30 --dump-header "$headers" --output /dev/null "$base$from"
+            grep -qi '^HTTP/.* 301' "$headers" || { cat "$headers"; echo "Missing 301 at $from"; exit 1; }
+            grep -i "^location:" "$headers" | grep -qiF "$expected" || { cat "$headers"; echo "Unexpected Location for $from"; exit 1; }
+          done
+          echo 'PASS: live Pages preview URLs, security, staging noindex and 404'

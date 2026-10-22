@@ -1,0 +1,78 @@
+name: wescaleIT final Cloudflare Pages and Microsoft 365 cutover QA
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/wescaleit-cloudflare-final-cutover.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Test live Pages canonical apex and website functionality
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://wescaleit.com'
+          for path in '/' '/kontakt' '/karriere' '/ueber-uns' '/florian-zegar' '/marke-fcth' '/marke-silverback' '/marke-psoydo' '/impressum' '/datenschutz' '/robots.txt' '/sitemap.xml' '/css/hero-blob.css' '/js/hero-blob.js' '/js/contact-form.js' '/images/kununu-top-company-2027-aligned.svg?v=align-2027-2'; do
+            result="$(curl --silent --show-error --location --max-time 35 --retry 3 --max-redirs 8 --output /dev/null --write-out '%{http_code}' "$base$path")"
+            test "$result" = 200 || { echo "FAIL $base$path HTTP $result"; exit 1; }
+            echo "PASS $base$path HTTP 200"
+          done
+          curl -fsSL --retry 3 --max-time 30 --dump-header /tmp/wescale-headers --output /tmp/wescale-home "$base/"
+          grep -qi '^cf-ray:' /tmp/wescale-headers
+          for header in strict-transport-security x-content-type-options content-security-policy referrer-policy x-frame-options permissions-policy; do
+            grep -qi "^$header:" /tmp/wescale-headers || { echo "FAIL: missing $header"; exit 1; }
+          done
+          if grep -qi '^x-robots-tag:.*noindex' /tmp/wescale-headers; then echo 'FAIL production noindex'; exit 1; fi
+          grep -qi 'content="index, follow"' /tmp/wescale-home
+          grep -qF 'rel="canonical" href="https://wescaleit.com/"' /tmp/wescale-home
+          grep -qF 'kununu-top-company-2027-aligned.svg?v=align-2027-2' /tmp/wescale-home
+          grep -qF 'Cloudflare Pages' <(curl -fsSL --retry 3 --max-time 30 "$base/datenschutz")
+          grep -qF 'Allow: /' <(curl -fsSL --retry 3 --max-time 30 "$base/robots.txt")
+          missing="$(curl -sSL --max-time 30 --output /dev/null --write-out '%{http_code}' "$base/unknown-cutover-check-841291")"
+          test "$missing" = 404 || { echo "FAIL 404 got $missing"; exit 1; }
+          curl -fsSL --retry 3 --max-time 30 --dump-header /tmp/pages-headers --output /dev/null 'https://wescaleit-website.pages.dev/'
+          grep -qi '^x-robots-tag:.*noindex' /tmp/pages-headers
+          echo 'PASS live apex Pages security, privacy, indexability, badges, SEO and 404'
+      - name: Validate canonical www and preserved legacy brand links
+        shell: bash
+        run: |
+          set -euo pipefail
+          for row in \
+            'https://www.wescaleit.com/|https://wescaleit.com/' \
+            'https://www.wescaleit.com/kontakt?quelle=karte|https://wescaleit.com/kontakt?quelle=karte' \
+            'https://www.wescaleit.com/infosec?quelle=homepage|https://wescaleit.com/infosec?quelle=homepage' \
+            'https://wescaleit.com/infosec|https://www.ciso2hero.com/beratung.html' \
+            'https://wescaleit.com/isms|https://www.ciso2hero.com/beratung.html' \
+            'https://wescaleit.com/itxm|https://www.silverback-network.com/' \
+            'https://wescaleit.com/bedarf-ergruenden-itxm|https://www.silverback-network.com/' \
+            'https://wescaleit.com/bedarf-ergruenden-karriere|/karriere' \
+            'https://wescaleit.com/bedarf-ergruenden-addons|/kontakt#kontaktformular'; do
+            request="${row%%|*}"; destination="${row#*|}"
+            file="$(mktemp)"
+            curl --silent --show-error --max-time 30 --dump-header "$file" --output /dev/null "$request"
+            grep -qi '^HTTP/.* 301' "$file" || { cat "$file"; echo "FAIL: expected 301 for $request"; exit 1; }
+            grep -i '^location:' "$file" | grep -qiF "$destination" || { cat "$file"; echo "FAIL: wrong Location for $request"; exit 1; }
+            echo "PASS $request redirects to $destination"
+          done
+      - name: Verify M365 and Teams DNS records on both authoritative Cloudflare servers
+        shell: bash
+        run: |
+          set -euo pipefail
+          for ns in quinton.ns.cloudflare.com savanna.ns.cloudflare.com; do
+            dig +short @"$ns" wescaleit.com MX | grep -Fq '0 wescaleit-com.mail.protection.outlook.com.'
+            dig +short @"$ns" wescaleit.com TXT | grep -Fq 'v=spf1 include:spf.protection.outlook.com -all'
+            dig +short @"$ns" _dmarc.wescaleit.com TXT | grep -Fq 'v=DMARC1;p=quarantine'
+            dig +short @"$ns" autodiscover.wescaleit.com CNAME | grep -qF 'autodiscover.outlook.com.'
+            dig +short @"$ns" sip.wescaleit.com CNAME | grep -qF 'sipdir.online.lync.com.'
+            dig +short @"$ns" lyncdiscover.wescaleit.com CNAME | grep -qF 'webdir.online.lync.com.'
+            dig +short @"$ns" _sip._tls.wescaleit.com SRV | grep -Fq '100 1 443 sipdir.online.lync.com.'
+            dig +short @"$ns" _sipfederationtls._tcp.wescaleit.com SRV | grep -Fq '100 1 5061 sipfed.online.lync.com.'
+            dig +short @"$ns" gdc.wescaleit.com MX | grep -Fq '10 mx10.mailspamprotection.com.'
+            dig +short @"$ns" cb.wescaleit.com A | grep -qFx '89.31.143.90'
+            dig +short @"$ns" test.dev.wescaleit.com A | grep -qFx '118.70.171.157'
+            echo "PASS M365, Teams and service DNS on authoritative $ns"
+          done

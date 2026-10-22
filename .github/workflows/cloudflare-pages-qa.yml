@@ -61,6 +61,6 @@ jobs:
             headers="$(mktemp)"
             curl -sS --max-time 30 --dump-header "$headers" --output /dev/null "$base$from"
             grep -qi '^HTTP/.* 301' "$headers" || { cat "$headers"; echo "Missing 301 at $from"; exit 1; }
-            grep -qiF "location: $expected" "$headers" || { cat "$headers"; echo "Unexpected Location for $from"; exit 1; }
+            grep -i "^location:" "$headers" | grep -qiF "$expected" || { cat "$headers"; echo "Unexpected Location for $from"; exit 1; }
           done
           echo 'PASS: live Pages preview URLs, security, staging noindex and 404'

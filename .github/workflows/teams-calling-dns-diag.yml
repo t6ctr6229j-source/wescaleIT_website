@@ -32,9 +32,9 @@ jobs:
             for name,rtype in queries:
               url=provider+'?'+urllib.parse.urlencode({'name':name,'type':rtype})
               with urllib.request.urlopen(urllib.request.Request(url,headers={'Accept':'application/dns-json'}),timeout=20) as resp: data=json.load(resp)
-              got=[a.get('data','').lower() for a in data.get('Answer',[]) if a.get('type')=={'SRV':33,'CNAME':5}[rtype]]
+              got=[a.get('data','').lower().rstrip('.') for a in data.get('Answer',[]) if a.get('type')=={'SRV':33,'CNAME':5}[rtype]]
               status=data.get('Status')
-              matched=status==0 and expected[(name,rtype)] in got
+              matched=status==0 and expected[(name,rtype)].rstrip('.') in got
               print('PUBLIC',provider.split('/')[2],name,rtype,'status',status,'values',','.join(got),'MATCH',matched)
               if not matched: bad.append((provider,name,rtype,got,status))
           if bad: print('WARNING: Public Teams-related DNS differs:',bad)

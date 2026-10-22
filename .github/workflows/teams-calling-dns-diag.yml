@@ -1,0 +1,48 @@
+name: Diagnose Teams calling DNS after Cloudflare nameserver cutover
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/teams-calling-dns-diag.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Compare Teams SIP SRV and CNAME on Cloudflare and previous DNS authorities
+        shell: bash
+        run: |
+          set -euo pipefail
+          for server in quinton.ns.cloudflare.com savanna.ns.cloudflare.com ns.udag.de ns.udag.net ns.udag.org; do
+            echo "=== AUTHORITY $server ==="
+            for query in '_sip._tls.wescaleit.com SRV' '_sipfederationtls._tcp.wescaleit.com SRV' 'sip.wescaleit.com CNAME' 'lyncdiscover.wescaleit.com CNAME' 'autodiscover.wescaleit.com CNAME'; do
+              set -- $query
+              echo "DNS $1 $2"
+              dig +time=4 +tries=1 +noall +answer @"$server" "$1" "$2" || true
+            done
+          done
+          python3 - <<'PY'
+          import urllib.request,urllib.parse,json
+          queries=[('_sip._tls.wescaleit.com','SRV'),('_sipfederationtls._tcp.wescaleit.com','SRV'),('sip.wescaleit.com','CNAME'),('lyncdiscover.wescaleit.com','CNAME'),('autodiscover.wescaleit.com','CNAME')]
+          expected={('_sip._tls.wescaleit.com','SRV'):'100 1 443 sipdir.online.lync.com.',('_sipfederationtls._tcp.wescaleit.com','SRV'):'100 1 5061 sipfed.online.lync.com.',('sip.wescaleit.com','CNAME'):'sipdir.online.lync.com.',('lyncdiscover.wescaleit.com','CNAME'):'webdir.online.lync.com.',('autodiscover.wescaleit.com','CNAME'):'autodiscover.outlook.com.'}
+          bad=[]
+          for provider in ('https://dns.google/resolve','https://cloudflare-dns.com/dns-query'):
+            for name,rtype in queries:
+              url=provider+'?'+urllib.parse.urlencode({'name':name,'type':rtype})
+              with urllib.request.urlopen(urllib.request.Request(url,headers={'Accept':'application/dns-json'}),timeout=20) as resp: data=json.load(resp)
+              got=[a.get('data','').lower().rstrip('.') for a in data.get('Answer',[]) if a.get('type')=={'SRV':33,'CNAME':5}[rtype]]
+              status=data.get('Status')
+              matched=status==0 and expected[(name,rtype)].rstrip('.') in got
+              print('PUBLIC',provider.split('/')[2],name,rtype,'status',status,'values',','.join(got),'MATCH',matched)
+              if not matched: bad.append((provider,name,rtype,got,status))
+          if bad: print('WARNING: Public Teams-related DNS differs:',bad)
+          PY
+          for server in quinton.ns.cloudflare.com savanna.ns.cloudflare.com; do
+            test "$(dig +short @"$server" _sip._tls.wescaleit.com SRV | tr -d '\r')" = '100 1 443 sipdir.online.lync.com.'
+            test "$(dig +short @"$server" _sipfederationtls._tcp.wescaleit.com SRV | tr -d '\r')" = '100 1 5061 sipfed.online.lync.com.'
+            test "$(dig +short @"$server" sip.wescaleit.com CNAME | tr -d '\r')" = 'sipdir.online.lync.com.'
+            test "$(dig +short @"$server" lyncdiscover.wescaleit.com CNAME | tr -d '\r')" = 'webdir.online.lync.com.'
+          done
+          echo "PASS both Cloudflare authoritative DNS servers exactly match expected Teams CNAME and SRV records"

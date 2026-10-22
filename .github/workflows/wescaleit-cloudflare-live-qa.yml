@@ -1,0 +1,63 @@
+name: wescaleIT Cloudflare Pages live cutover QA
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/wescaleit-cloudflare-live-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - name: Read-only public Pages www canary and security tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://www.wescaleit.com'
+          for path in '/' '/kontakt' '/karriere' '/ueber-uns' '/florian-zegar' '/marke-fcth' '/marke-silverback' '/marke-psoydo' '/impressum' '/datenschutz' '/robots.txt' '/sitemap.xml' '/css/hero-blob.css' '/js/hero-blob.js' '/js/contact-form.js' '/images/kununu-top-company-2027-aligned.svg?v=align-2027-2'; do
+            code="$(curl -fsSL --retry 3 --max-time 25 --max-redirs 8 --output /dev/null --write-out '%{http_code}' "$base$path")"
+            test "$code" = '200' || { echo "FAILED $base$path HTTP=$code"; exit 1; }
+            echo "OK $base$path HTTP 200"
+          done
+          curl -fsSL --max-time 25 --dump-header /tmp/headers-main --output /tmp/index-main "$base/"
+          grep -qi '^cf-ray:' /tmp/headers-main
+          for header in x-content-type-options content-security-policy strict-transport-security referrer-policy x-frame-options permissions-policy; do
+            grep -qi "^$header:" /tmp/headers-main || { echo "Missing $header"; exit 1; }
+          done
+          if grep -qi '^x-robots-tag:.*noindex' /tmp/headers-main; then echo "Production accidentally noindexed"; exit 1; fi
+          grep -iq 'content="index, follow"' /tmp/index-main
+          grep -q 'https://wescaleit.com/' /tmp/index-main
+          grep -q 'kununu-top-company-2027-aligned.svg?v=align-2027-2' /tmp/index-main
+          curl -fsSL --max-time 25 "$base/datenschutz" | grep -qF 'Cloudflare Pages'
+          code="$(curl -sSL --max-time 25 --output /dev/null --write-out '%{http_code}' "$base/wescaleit-missing-route-39402")"
+          test "$code" = 404 || { echo "Expected 404, got $code"; exit 1; }
+          for row in \
+            '/infosec|https://www.ciso2hero.com/beratung.html' \
+            '/isms|https://www.ciso2hero.com/beratung.html' \
+            '/itxm|https://www.silverback-network.com/' \
+            '/bedarf-ergruenden-itxm|https://www.silverback-network.com/' \
+            '/bedarf-ergruenden-karriere|/karriere' \
+            '/bedarf-ergruenden-addons|/kontakt#kontaktformular'; do
+            from="${row%%|*}"; expected="${row#*|}"
+            headers="$(mktemp)"
+            curl -sS --max-time 30 --dump-header "$headers" --output /dev/null "$base$from"
+            grep -qi '^HTTP/.* 301' "$headers" || { cat "$headers"; echo "Expected 301 at $from"; exit 1; }
+            grep -i '^location:' "$headers" | grep -qiF "$expected" || { cat "$headers"; echo "Location wrong at $from"; exit 1; }
+          done
+          echo 'PASS wescaleIT www Pages, 2027 badge, production indexability, security headers, 404 and legacy redirects'
+      - name: Compare Microsoft 365 and other DNS against both Cloudflare authoritative servers
+        shell: bash
+        run: |
+          set -euo pipefail
+          for server in quinton.ns.cloudflare.com savanna.ns.cloudflare.com; do
+            dig +short @"$server" wescaleit.com MX | grep -q '0 wescaleit-com.mail.protection.outlook.com.'
+            dig +short @"$server" wescaleit.com TXT | grep -Fq 'v=spf1 include:spf.protection.outlook.com -all'
+            dig +short @"$server" _dmarc.wescaleit.com TXT | grep -Fq 'v=DMARC1;p=quarantine'
+            dig +short @"$server" autodiscover.wescaleit.com CNAME | grep -qF 'autodiscover.outlook.com.'
+            dig +short @"$server" sip.wescaleit.com CNAME | grep -qF 'sipdir.online.lync.com.'
+            dig +short @"$server" cb.wescaleit.com A | grep -qFx '89.31.143.90'
+            dig +short @"$server" demo.dev.wescaleit.com A | grep -qFx '118.70.171.157'
+            echo "PASS M365 and service records at $server"
+          done

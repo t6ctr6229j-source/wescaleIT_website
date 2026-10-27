@@ -22,6 +22,8 @@ jobs:
           node scripts/check_analytics.cjs
       - name: Assemble live-like release
         run: python3 scripts/build_release.py --production
+      - name: Validate indexable release and linked company entities
+        run: python3 scripts/check_release_seo.py
       - name: Verify all three kununu badges and Tally consent
         run: |
           python3 - <<'PY'

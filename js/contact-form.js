@@ -7,6 +7,8 @@
   const consent = shell.querySelector('[data-form-consent]');
   const container = shell.querySelector('#contact-form-embed');
   let frame = null;
+  // Submission identifiers stay in memory only and are never sent to Analytics.
+  const submitted = new Set();
   load.hidden = false;
   load.addEventListener('click', () => {
     if (frame) return;
@@ -34,8 +36,16 @@
     if (!frame || event.origin !== 'https://tally.so' || event.source !== frame.contentWindow) return;
     let data = event.data;
     try { if (typeof data === 'string') data = JSON.parse(data); } catch { return; }
-    if (data?.event !== 'Tally.FormHeight' || data.payload?.formId !== 'ja1WdE') return;
-    const height = Number(data.payload.height);
-    if (Number.isFinite(height) && height >= 200 && height <= 6000) frame.style.height = height + 'px';
+    if (data?.payload?.formId !== 'ja1WdE') return;
+    if (data.event === 'Tally.FormHeight') {
+      const height = Number(data.payload.height);
+      if (Number.isFinite(height) && height >= 200 && height <= 6000) frame.style.height = height + 'px';
+    } else if (data.event === 'Tally.FormSubmitted') {
+      const submissionId = data.payload.id;
+      if (typeof submissionId !== 'string' || !submissionId || submitted.has(submissionId)) return;
+      submitted.add(submissionId);
+      // No buffering: a submission before consent is not sent after a later grant.
+      window.WescaleITAnalytics?.trackLead();
+    }
   });
 })();

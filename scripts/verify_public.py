@@ -5,6 +5,7 @@ from urllib.parse import urljoin
 import os
 import json
 import time
+from check_release_seo import audit
 
 
 class InspectRedirect(HTTPRedirectHandler):
@@ -49,6 +50,8 @@ try:
         with fresh(path) as r:
             assert marker in r.read().decode(), path
     for old_path, expected in [
+        ('/infosec', 'https://www.ciso2hero.com/beratung'),
+        ('/isms', 'https://www.ciso2hero.com/beratung'),
         ('/bedarf-ergruenden-itxm', 'https://www.silverback-network.com/'),
         ('/bedarf-ergruenden-karriere', origin + '/karriere'),
         ('/bedarf-ergruenden-addons', origin + '/kontakt'),
@@ -61,6 +64,7 @@ try:
         assert e.code == 404
     else:
         raise ValueError('Missing page did not return HTTP 404.')
+    audit(live=True)
 except Exception as e:
     raise SystemExit('Upload and domain routing are separate. Public verification failed: ' + str(e))
 print('PASS: production domain, release, legal pages, indexing and 404.')

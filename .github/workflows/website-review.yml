@@ -20,8 +20,12 @@ jobs:
           node --check js/dachmarke.js
           node --check js/hero-blob.js
           node scripts/check_analytics.cjs
+          node scripts/check-consent-lifecycle.cjs
+          node scripts/check_contact_form.cjs
       - name: Assemble live-like release
         run: python3 scripts/build_release.py --production
+      - name: Verify production canonical URLs and sitemap
+        run: python3 scripts/check_release_seo.py dist/wescaleit
       - name: Verify all three kununu badges and Tally consent
         run: |
           python3 - <<'PY'

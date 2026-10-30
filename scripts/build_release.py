@@ -93,8 +93,8 @@ RewriteBase /
 RewriteCond %{HTTPS} !=on [OR]
 RewriteCond %{HTTP_HOST} !^wescaleit\\.com$ [NC]
 RewriteRule ^ https://wescaleit.com%{REQUEST_URI} [R=301,L]
-RewriteRule ^infosec/?$ https://www.ciso2hero.com/beratung.html [R=301,L]
-RewriteRule ^isms/?$ https://www.ciso2hero.com/beratung.html [R=301,L]
+RewriteRule ^infosec/?$ https://www.ciso2hero.com/beratung [R=301,L]
+RewriteRule ^isms/?$ https://www.ciso2hero.com/beratung [R=301,L]
 RewriteRule ^itxm/?$ https://www.silverback-network.com/ [R=301,L]
 # Former enquiry forms now lead to the corresponding current entry point.
 RewriteRule ^bedarf-ergruenden-itxm/?$ https://www.silverback-network.com/ [R=301,L]

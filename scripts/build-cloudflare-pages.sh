@@ -26,10 +26,10 @@ EOF
 cat > cf-dist/_redirects <<'EOF'
 # Preserve previously published Apache legacy routes on Cloudflare Pages.
 # Do not manually rewrite .html -> extensionless; Pages handles that natively.
-/infosec https://www.ciso2hero.com/beratung.html 301
-/infosec/ https://www.ciso2hero.com/beratung.html 301
-/isms https://www.ciso2hero.com/beratung.html 301
-/isms/ https://www.ciso2hero.com/beratung.html 301
+/infosec https://www.ciso2hero.com/beratung 301
+/infosec/ https://www.ciso2hero.com/beratung 301
+/isms https://www.ciso2hero.com/beratung 301
+/isms/ https://www.ciso2hero.com/beratung 301
 /itxm https://www.silverback-network.com/ 301
 /itxm/ https://www.silverback-network.com/ 301
 /bedarf-ergruenden-itxm https://www.silverback-network.com/ 301

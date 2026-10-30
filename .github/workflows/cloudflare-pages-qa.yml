@@ -3,7 +3,10 @@ on:
   pull_request:
     paths:
       - 'scripts/build-cloudflare-pages.sh'
+      - 'scripts/build_release.py'
+      - 'scripts/check_release_seo.py'
       - '.github/workflows/cloudflare-pages-qa.yml'
+      - 'js/**'
       - 'images/**'
       - '*.html'
   workflow_dispatch:
@@ -16,13 +19,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build Cloudflare Pages preview
         run: sh scripts/build-cloudflare-pages.sh
+      - name: Verify built production URLs
+        run: python3 scripts/check_release_seo.py cf-dist
       - name: Assert noindex scoped to preview and Apache config removed
         run: |
           test -f cf-dist/404.html
           test -f cf-dist/kontakt.html
           test ! -f cf-dist/.htaccess
           test -s cf-dist/_redirects
-          grep -q '^/infosec https://www.ciso2hero.com/beratung.html 301' cf-dist/_redirects
+          grep -q '^/infosec https://www.ciso2hero.com/beratung 301' cf-dist/_redirects
           grep -q '^/itxm https://www.silverback-network.com/ 301' cf-dist/_redirects
           grep -q '^/bedarf-ergruenden-addons /kontakt#kontaktformular 301' cf-dist/_redirects
           grep -q 'https://wescaleit-website.pages.dev/\*' cf-dist/_headers
@@ -30,6 +35,9 @@ jobs:
           node --check cf-dist/js/contact-form.js
           node --check cf-dist/js/analytics.js
   smoke:
+    # This URL serves main, not the pull request. Run this live check explicitly
+    # after deployment; PR checks above validate the actual candidate artifact.
+    if: github.event_name == 'workflow_dispatch'
     needs: check
     runs-on: ubuntu-24.04
     steps:
@@ -50,8 +58,8 @@ jobs:
           # Crucial: the old Apache redirects must survive migration to Pages.
           # Read only the first 301; do not follow to third-party brands.
           for row in \
-            '/infosec|https://www.ciso2hero.com/beratung.html' \
-            '/isms|https://www.ciso2hero.com/beratung.html' \
+            '/infosec|https://www.ciso2hero.com/beratung' \
+            '/isms|https://www.ciso2hero.com/beratung' \
             '/itxm|https://www.silverback-network.com/' \
             '/bedarf-ergruenden-itxm|https://www.silverback-network.com/' \
             '/bedarf-ergruenden-karriere|/karriere' \

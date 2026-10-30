@@ -11,7 +11,28 @@
   let expiryTimer;
   let loaded = false;
   let accepted = false;
+  let expiresAt = 0;
+  const production = location.protocol === 'https:' &&
+    ['wescaleit.com', 'www.wescaleit.com'].includes(location.hostname);
   window['ga-disable-' + id] = true;
+  // Keep source attribution without sending referring paths, queries or fragments.
+  function safeReferrer() {
+    try {
+      const referrer = new URL(document.referrer);
+      return ['https:', 'http:'].includes(referrer.protocol) && referrer.origin !== location.origin
+        ? referrer.origin + '/' : '';
+    } catch (_) { return ''; }
+  }
+  window.WescaleITAnalytics = Object.freeze({
+    trackLead() {
+      if (!production || !accepted || !loaded || expiresAt <= Date.now() ||
+          window['ga-disable-' + id] || typeof window.gtag !== 'function') return false;
+      window.gtag('event', 'generate_lead', {
+        send_to: id, form_id: 'ja1WdE', method: 'tally'
+      });
+      return true;
+    }
+  });
   function readChoice() {
     try {
       const value = JSON.parse(localStorage.getItem(key));
@@ -36,6 +57,7 @@
     });
   }
   function watchExpiry(expires) {
+    expiresAt = expires;
     clearTimeout(expiryTimer);
     const remaining = expires - Date.now();
     if (remaining <= 0) {
@@ -49,7 +71,7 @@
     expiryTimer = setTimeout(() => watchExpiry(expires), Math.min(remaining, 2147483647));
   }
   function start() {
-    if (loaded || location.protocol !== 'https:') return;
+    if (loaded || !production) return;
     loaded = true;
     window['ga-disable-' + id] = false;
     window.dataLayer = window.dataLayer || [];
@@ -64,7 +86,7 @@
       allow_google_signals: false, allow_ad_personalization_signals: false,
       cookie_expires: 15552000, cookie_update: false,
       page_location: location.origin + location.pathname,
-      page_referrer: '', send_page_view: true
+      page_referrer: safeReferrer(), send_page_view: true
     });
     const script = document.createElement('script');
     script.async = true;

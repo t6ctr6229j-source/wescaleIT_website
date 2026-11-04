@@ -19,10 +19,12 @@ def add_job_schema(filename, content, metadata):
     if expires and (date.fromisoformat(expires) < date.today() or date.fromisoformat(expires) < posted):
         raise ValueError(f'{filename}: expired vacancies must not publish JobPosting')
     address = metadata.get('job_location')
-    if not isinstance(address, dict) or not address.get('addressLocality') or not re.fullmatch(r'[A-Z]{2}', address.get('addressCountry', '')):
+    if not isinstance(address, dict):
         raise ValueError(f'{filename}: a confirmed work location is required; company headquarters are insufficient')
     address = {key: str(value).strip() for key, value in address.items()
                if key in ('streetAddress', 'postalCode', 'addressLocality', 'addressRegion', 'addressCountry') and value}
+    if not address.get('addressLocality') or not re.fullmatch(r'[A-Z]{2}', address.get('addressCountry', '')):
+        raise ValueError(f'{filename}: a nonempty confirmed work location is required')
     title_match = re.search(r'<h1\b[^>]*>(.*?)</h1>', content, re.S)
     description_match = re.search(r'<div class="prose" id="job-description">(.*?)</div><aside', content, re.S)
     if not title_match or not description_match:

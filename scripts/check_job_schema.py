@@ -17,6 +17,7 @@ sample = {
 for invalid in [
     {'publish': True}, {**sample, 'confirmed_open': False},
     {**sample, 'job_location': None}, {**sample, 'date_posted': None},
+    {**sample, 'job_location': {'addressLocality': '   ', 'addressCountry': 'DE'}},
     {**sample, 'date_posted': (date.today() + timedelta(days=1)).isoformat()},
     {**sample, 'valid_through': (date.today() - timedelta(days=1)).isoformat()}
 ]:

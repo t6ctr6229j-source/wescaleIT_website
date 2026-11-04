@@ -8,7 +8,7 @@ function run(choice, blocked = false, options = {}) {
   const accept = control('accept'), deny = control('deny'), settings = control('settings');
   const dialog = { open: false, showModal() { this.open = true; }, close() { this.open = false; }, querySelector: s => s.includes('accept') ? accept : deny };
   const status = {};
-  const document = { cookie: '', referrer: options.referrer || '', getElementById: id => id === 'statistics-consent' ? dialog : status, querySelectorAll: () => [settings], createElement: () => ({}), head: { appendChild: s => scripts.push(s) } };
+  const document = { cookie: '', referrer: options.referrer || '', addEventListener: (name, fn) => { handlers['document:' + name] = fn; }, getElementById: id => id === 'statistics-consent' ? dialog : status, querySelectorAll: () => [settings], createElement: () => ({}), head: { appendChild: s => scripts.push(s) } };
   let reloads = 0;
   const location = { protocol: 'https:', origin: 'https://wescaleit.com', hostname: 'wescaleit.com', pathname: '/index.html', reload: () => reloads++ };
   Object.assign(location, options.location || {});
@@ -59,4 +59,46 @@ for (const [referrer, expected] of [
   assert.equal(config.page_location, 'https://wescaleit.com/index.html');
 }
 console.log('PASS: consent-gated lead event, no personal form parameters, no preview/HTTP collection, origin-only source attribution.');
+
+function click(x, href, overrides = {}) {
+  x.handlers['document:click']({
+    isTrusted: true, defaultPrevented: false, button: 0,
+    target: { closest: () => ({ getAttribute: () => href }) }, ...overrides
+  });
+}
+const events = x => (x.window.dataLayer || []).filter(row => row[0] === 'event');
+x = run(null);
+click(x, 'https://psoydo.com/de/');
+assert.equal(events(x).length, 0);
+x.handlers.accept();
+assert.equal(events(x).length, 0, 'Do not replay clicks from before consent');
+for (const [href, brand] of [
+  ['https://www.ciso2hero.com/beratung?private=secret', 'fcth'],
+  ['https://www.silverback-network.com/', 'silverback'],
+  ['https://psoydo.com/de/#private', 'psoydo']
+]) {
+  click(x, href);
+  assert.deepEqual(JSON.parse(JSON.stringify(events(x).at(-1))),
+    { 0: 'event', 1: 'brand_visit', 2: { send_to: 'G-7QYEF752NM', destination_brand: brand } });
+}
+for (const href of ['https://psoydo.com.example.org/', 'http://psoydo.com/', '/kontakt', 'javascript:alert(1)']) click(x, href);
+click(x, 'https://psoydo.com/de/', { isTrusted: false });
+click(x, 'https://psoydo.com/de/', { defaultPrevented: true });
+assert.equal(events(x).length, 3);
+x.handlers.deny();
+click(x, 'https://psoydo.com/de/');
+assert.equal(events(x).length, 3);
+for (const [pathname, type] of [['/karriere', 'initiative'], ['/job-informationssicherheit', 'informationssicherheit']]) {
+  x = run(stored('granted'), false, { location: { pathname } });
+  click(x, 'mailto:info@wescaleit.com?subject=private&body=secret');
+  assert.deepEqual(JSON.parse(JSON.stringify(events(x)[0])), {
+    0: 'event', 1: 'application_contact',
+    2: { send_to: 'G-7QYEF752NM', method: 'email', application_type: type }
+  });
+  assert.equal(leadEvents(x).length, 0, 'An email click is not a submitted application');
+}
+x = run(stored('granted'), false, { location: { hostname: 'preview.pages.dev' } });
+click(x, 'https://psoydo.com/de/');
+assert.equal(events(x).length, 0);
+console.log('PASS: consented brand navigation and application intent, fixed labels, no replay/PII/preview or synthetic-click tracking.');
 

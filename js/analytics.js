@@ -23,14 +23,41 @@
         ? referrer.origin + '/' : '';
     } catch (_) { return ''; }
   }
+  function trackEvent(name, parameters) {
+    if (!production || !accepted || !loaded || expiresAt <= Date.now() ||
+        window['ga-disable-' + id] || typeof window.gtag !== 'function') return false;
+    window.gtag('event', name, { send_to: id, ...parameters });
+    return true;
+  }
   window.WescaleITAnalytics = Object.freeze({
     trackLead() {
-      if (!production || !accepted || !loaded || expiresAt <= Date.now() ||
-          window['ga-disable-' + id] || typeof window.gtag !== 'function') return false;
-      window.gtag('event', 'generate_lead', {
-        send_to: id, form_id: 'ja1WdE', method: 'tally'
+      return trackEvent('generate_lead', { form_id: 'ja1WdE', method: 'tally' });
+    }
+  });
+  // Fixed labels only: never send a destination URL, mail subject or application data.
+  const brands = new Map([
+    ['ciso2hero.com', 'fcth'], ['www.ciso2hero.com', 'fcth'],
+    ['silverback-network.com', 'silverback'], ['www.silverback-network.com', 'silverback'],
+    ['psoydo.com', 'psoydo'], ['www.psoydo.com', 'psoydo']
+  ]);
+  document.addEventListener('click', event => {
+    if (!event.isTrusted || event.defaultPrevented || (event.button != null && event.button !== 0)) return;
+    const link = event.target?.closest?.('a[href]');
+    if (!link) return;
+    let destination;
+    try { destination = new URL(link.getAttribute('href'), location.origin); }
+    catch (_) { return; }
+    if (destination.protocol === 'https:' && brands.has(destination.hostname)) {
+      trackEvent('brand_visit', { destination_brand: brands.get(destination.hostname) });
+      return;
+    }
+    const page = location.pathname.replace(/\.html$/, '').replace(/\/$/, '');
+    if (destination.protocol === 'mailto:' && destination.pathname.toLowerCase() === 'info@wescaleit.com' &&
+        ['/karriere', '/job-informationssicherheit'].includes(page)) {
+      // Opening an email application is an intent signal, never a confirmed lead.
+      trackEvent('application_contact', {
+        method: 'email', application_type: page === '/karriere' ? 'initiative' : 'informationssicherheit'
       });
-      return true;
     }
   });
   function readChoice() {

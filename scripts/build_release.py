@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import sys
 from xml.etree import ElementTree as ET
+from job_schema import add_job_schema
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'dist' / 'wescaleit'
@@ -33,6 +34,7 @@ def blockers(pages):
 
 def build(production=False):
     pages = {p.name: p.read_text() for p in ROOT.glob('*.html')}
+    job_metadata = json.loads((ROOT / 'data/job-postings.json').read_text())
     issues = blockers(pages)
     # Remove stale artifacts even when a subsequent production gate fails.
     if OUT.exists():
@@ -40,6 +42,7 @@ def build(production=False):
     if production and issues:
         raise SystemExit('Live-Build noch gesperrt:\n- ' + '\n- '.join(issues))
     subprocess.run([sys.executable, str(ROOT / 'scripts/check_site.py')], check=True)
+    subprocess.run([sys.executable, str(ROOT / 'scripts/check_job_schema.py')], check=True)
     OUT.mkdir(parents=True)
     for directory in ('css', 'js', 'images', 'fonts', 'assets'):
         if (ROOT / directory).exists():
@@ -47,6 +50,8 @@ def build(production=False):
     (OUT / 'release.json').write_text(json.dumps({'commit': os.environ.get('GITHUB_SHA', subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip())}))
     sitemap = ET.Element('urlset', xmlns='http://www.sitemaps.org/schemas/sitemap/0.9')
     for name, content in pages.items():
+        if production:
+            content = add_job_schema(name, content, job_metadata.get(name))
         route = '/' if name == 'index.html' else '/' + name.removesuffix('.html')
         canonical = ORIGIN + route
         indexable = production and name != '404.html'

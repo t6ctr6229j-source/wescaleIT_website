@@ -26,6 +26,8 @@ EOF
 cat > cf-dist/_redirects <<'EOF'
 # Preserve previously published Apache legacy routes on Cloudflare Pages.
 # Do not manually rewrite .html -> extensionless; Pages handles that natively.
+/deepweb-und-darknetscan https://www.ciso2hero.com/darknet-scan 301
+/deepweb-und-darknetscan/ https://www.ciso2hero.com/darknet-scan 301
 /infosec https://www.ciso2hero.com/beratung 301
 /infosec/ https://www.ciso2hero.com/beratung 301
 /isms https://www.ciso2hero.com/beratung 301

@@ -56,3 +56,8 @@
 .footer-contact{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:2rem;padding:2rem 0;border-top:1px solid #ffffff26;margin-bottom:1.5rem;font-size:.85rem}
 .footer-contact .eyebrow{color:var(--mint);margin-bottom:.6rem}.footer-contact p{color:#dedeea}.footer-contact address{font-style:normal}.footer-contact-links{display:flex;flex-direction:column;align-items:flex-start;gap:.65rem}.footer-contact a{overflow-wrap:anywhere}.footer-contact a:hover{color:var(--mint)}
 @media(max-width:760px){.footer-contact{grid-template-columns:1fr;gap:1.25rem}.brand-destinations .brand h3{min-height:0}.brand .brand-explanation{max-width:50ch}}
+
+/* A light, native cross-brand entry point; the scan runs only on FCTH. */
+.home-quickcheck .split>div{min-width:0}
+.home-quickcheck .text-link{margin-top:1.25rem;max-width:100%}
+.home-quickcheck .small{max-width:65ch}

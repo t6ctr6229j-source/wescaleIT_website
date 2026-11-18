@@ -61,3 +61,13 @@
 .hero-actions{display:flex;flex-wrap:wrap;align-items:center;gap:1rem 2rem;margin-top:2rem}
 .hero-actions .text-link:hover{color:var(--mint)}
 .hero-actions .button{max-width:100%}
+
+/* A light, native cross-brand entry point; the scan runs only on FCTH. */
+.home-quickcheck .split>div{min-width:0}
+.home-quickcheck .text-link{margin-top:1.25rem;max-width:100%}
+.home-quickcheck .small{max-width:65ch}
+
+/* Keep long inquiry labels and footer links inside narrow mobile viewports. */
+.route>div{min-width:0}
+.route h3{overflow-wrap:anywhere}
+@media(max-width:760px){.footer-top nav{flex-wrap:wrap}}

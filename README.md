@@ -8,7 +8,7 @@ Website-Entwurf der wescaleIT AG als Dach für FCTH, Silverback und Psoydo. Alle
 - **Haltung & Team:** Rolle der Dachgesellschaft, vier konkrete Kulturprinzipien und das bestehende Team. Porträts stehen ausschließlich im Teamraster.
 - **Karriere:** Stellen, Arbeitskultur, Teameinblicke, bestehende FAQ und ein kompakter Bewerbungsbereich ohne Porträt.
 - **Stellendetail:** Bestehende Aufgaben und Anforderungen, Eckdaten und Bewerbung per E-Mail.
-- **Kontakt:** Fachliche Anfragen zu den Marken; Unternehmensfragen zu wescaleIT. Textbasierter Kontakt ohne übergroße Personenbilder.
+- **Kontakt:** Fachliche Anfragen zu den Marken; Unternehmensfragen zu wescaleIT. Anliegenbasierte Einstiege und ein optionales, separat freizugebendes Tally-Formular; Karriere bleibt getrennt.
 - **404:** Rückweg zur Startseite.
 
 Alle Seiten haben denselben ruhigen Footer mit Marken-, Unternehmens- und Rechtslinks. Keine allgemeinen Dienstleistungsangebote der Dachgesellschaft.
@@ -41,7 +41,7 @@ Relative interne Links unterstützen GitHub Pages in einem Unterverzeichnis. Pag
 - Psoydo: https://psoydo.com/de/
 - Silverback: https://www.silverback-network.com (vom Nutzer bestätigte Zieladresse).
 
-Entwurfsstatus: `noindex, nofollow` und `robots.txt`. Impressum und Datenschutz sind als lokale Seiten integriert. Kein Formularbackend oder vorgetäuschter Versand. Google Analytics lädt ausschließlich nach Statistikzustimmung. Bewerbungen öffnen das E-Mail-Programm.
+Entwurfsstatus: `noindex, nofollow` und `robots.txt`. Impressum und Datenschutz sind als lokale Seiten integriert. Kein eigenes Formularbackend oder vorgetäuschter Versand. Das externe Tally-Formular ja1WdE lädt erst nach separater Freigabe. Google Analytics lädt ausschließlich nach Statistikzustimmung. Bewerbungen öffnen das E-Mail-Programm.
 
 Vor öffentlichem Launch: Markenadressen, Teamrollen und Stellenstatus bestätigen; visuelle Prüfung im Desktop- und Mobilbrowser durchführen; alte Leistungs-URLs passend weiterleiten. Prüfumfang und Grenzen stehen in `docs/QA.md`.
 
